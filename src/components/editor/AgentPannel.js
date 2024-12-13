@@ -30,12 +30,11 @@ function Agent(props) {
     const dispatch = useDispatch()
 
     const background = props.team === 'sapphire' ? 'bg-sky-500' : props.team === 'amber' ? 'bg-amber-500' : ''
-    const hover = props.team === 'sapphire' ? 'bg-sky-200' : props.team === 'amber' ? 'bg-amber-200' : 'bg-zinc-600'
 
     return(
         <img
             src={props.agent}
-            className={`rounded-lg ${background} hover:${hover}`}
+            className={`rounded-lg ${background} hover:bg-zinc-100`}
             onClick={(e) => {
                 dispatch(setSelectedAgent(props.agent))
             }}

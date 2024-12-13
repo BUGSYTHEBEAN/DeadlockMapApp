@@ -7,7 +7,7 @@ export const editorSlice = createSlice({
     selectedAgent: '',
     selectedTeam: 'sapphire',
     isMapDetail: true,
-    isMapLaneObjectives: true,
+    isMapLaneObjectives: false,
     isMapJungle: false,
     isMapBackground: true,
     isClearAll: false,
