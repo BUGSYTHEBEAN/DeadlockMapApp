@@ -41,7 +41,7 @@ export default function Header() {
           </a>
           */}
           <p className="-m-1.5 p-1.5 text-pretty text-lg font-medium text-neutral-100 sm:text-xl/8">
-              dlk.gg
+              dlkmap.com
           </p>
         </div>
         <div className="flex lg:hidden">
