@@ -1,8 +1,7 @@
 import React from 'react';
 import { Tab, TabGroup, TabList, Disclosure, DisclosureButton, DisclosurePanel, Button, RadioGroup, Radio } from '@headlessui/react'
-import { useSelector } from 'react-redux'
 import {
-    PencilIcon, ChevronDownIcon, TrashIcon, WrenchIcon,
+    PencilIcon, ChevronDownIcon, TrashIcon,
     BookmarkIcon,
     ArrowDownTrayIcon
   } from '@heroicons/react/16/solid'

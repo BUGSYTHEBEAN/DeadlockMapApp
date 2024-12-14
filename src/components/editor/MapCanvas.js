@@ -1,9 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux'
-import { Stage, Layer, Star, Text, Image, Line } from 'react-konva';
+import { Stage, Layer, Text, Image, Line } from 'react-konva';
 import useImage from 'use-image';
 import { useDispatch } from 'react-redux'
-import { setIsClearAgents, setIsClearAll, setIsClearLines, setIsDownload, setSelectedAgent } from '../../redux/editorSlice'
+import { setDroppedCoordinates, setIsClearAgents, setIsClearAll, setIsClearLines, setIsDownload, setSelectedAgent } from '../../redux/editorSlice'
 
 // map imports
 import mapOutline from '../../assets/map/map_outline.png'
@@ -47,8 +47,8 @@ const Agent = (props) => {
             image={image}
             width={42}
             height={57}
-            x={CANVAS_WIDTH / 2 - 21}
-            y={CANVAS_HEIGHT / 2 - 28}
+            x={(props.x ?? CANVAS_WIDTH / 2) - 21}
+            y={(props.y ?? CANVAS_HEIGHT / 2) - 28}
             cornerRadius={5}
             draggable
             fill={props.team === 'sapphire' ? '#0ea5e9' : props.team === 'amber' ? '#f59e0b' : undefined}
@@ -60,6 +60,7 @@ export default function MapCanvas() {
     // State vars
     const drawingColor = useSelector((state) => state.editor.drawingColor)
     const selectedAgent = useSelector((state) => state.editor.selectedAgent)
+    const droppedCoordinates = useSelector((state) => state.editor.droppedCoordinates)
     const selectedTeam = useSelector((state) => state.editor.selectedTeam)
     const isMapDetail = useSelector((state) => state.editor.isMapDetail)
     const isMapLaneObjectives = useSelector((state) => state.editor.isMapLaneObjectives)
@@ -77,8 +78,28 @@ export default function MapCanvas() {
     const stageRef = React.useRef(null);
 
     React.useEffect(() => {
+        if(selectedAgent.length > 0 && droppedCoordinates.x && droppedCoordinates.y && stageRef != null) {
+            const canvaspos = stageRef.current.attrs.container.getBoundingClientRect()
+            const correctedX = droppedCoordinates.x - canvaspos.x
+            const correctedY = droppedCoordinates.y - canvaspos.y
+            if (correctedX < 0 || correctedX > CANVAS_WIDTH || correctedY < 0 || correctedY > CANVAS_HEIGHT) {
+                dispatch(setSelectedAgent(""))
+                dispatch(setDroppedCoordinates({x: undefined, y: undefined}))
+                return
+            }
+            setAgents(agents.concat(<Agent
+                url={selectedAgent}
+                key={agents.length}
+                team={selectedTeam}
+                x={droppedCoordinates.x - canvaspos.x}
+                y={droppedCoordinates.y - canvaspos.y}
+            />))
+            dispatch(setSelectedAgent(""))
+            dispatch(setDroppedCoordinates({x: undefined, y: undefined}))
+            return
+        }
         if(selectedAgent.length > 0) {
-            setAgents(agents.concat(<Agent url={selectedAgent} key={agents.length} team={selectedTeam}/>))
+            setAgents(agents.concat(<Agent url={selectedAgent} key={agents.length} team={selectedTeam} />))
             dispatch(setSelectedAgent(""))
         }
     }, [selectedAgent])
@@ -151,6 +172,7 @@ export default function MapCanvas() {
     };
 
     return(
+        <div onDragOver={(e) => e.preventDefault()}>
         <Stage
             width={CANVAS_WIDTH}
             height={CANVAS_HEIGHT}
@@ -182,5 +204,6 @@ export default function MapCanvas() {
                 <Text text="dlkmap.com" fill="#fff" x={CANVAS_WIDTH - 120} y={CANVAS_HEIGHT - 20} fontSize={18} fontFamily='serif'/>
             </Layer>
         </Stage>
+        </div>
     )
 }

@@ -23,7 +23,7 @@ import warden from "../../assets/agents/warden_card.png"
 import wraith from "../../assets/agents/wraith_card.png"
 import yamato from "../../assets/agents/yamato_card.png"
 import { useDispatch } from 'react-redux'
-import { setSelectedAgent, setSelectedTeam } from '../../redux/editorSlice'
+import { setDroppedCoordinates, setSelectedAgent, setSelectedTeam } from '../../redux/editorSlice'
 import { Tab, TabGroup, TabList } from '@headlessui/react'
 
 function Agent(props) {
@@ -34,9 +34,14 @@ function Agent(props) {
     return(
         <img
             src={props.agent}
-            className={`rounded-lg ${background} hover:bg-zinc-100`}
+            className={`rounded-lg ${background} hover:bg-zinc-100 cursor-grab`}
             onClick={(e) => {
                 dispatch(setSelectedAgent(props.agent))
+            }}
+            draggable={true}
+            onDragEnd={(e) => {
+                dispatch(setSelectedAgent(props.agent))
+                dispatch(setDroppedCoordinates({x: e.pageX, y: e.pageY}))
             }}
         />
     )
