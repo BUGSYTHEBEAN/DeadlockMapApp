@@ -59,6 +59,7 @@ export default function MapCanvas() {
     const dispatch = useDispatch()
     // State vars
     const drawingColor = useSelector((state) => state.editor.drawingColor)
+    const drawingSize = useSelector((state) => state.editor.drawingSize)
     const selectedAgent = useSelector((state) => state.editor.selectedAgent)
     const droppedCoordinates = useSelector((state) => state.editor.droppedCoordinates)
     const selectedTeam = useSelector((state) => state.editor.selectedTeam)
@@ -130,7 +131,7 @@ export default function MapCanvas() {
     const handleMouseDown = (e) => {
         isDrawing.current = true;
         const pos = e.target.getStage().getPointerPosition();
-        setLines([...lines, { points: [pos.x, pos.y], color: drawingColor }]);
+        setLines([...lines, { points: [pos.x, pos.y], color: drawingColor, size: drawingSize }]);
     };
 
     const handleMouseMove = (e) => {
@@ -193,7 +194,7 @@ export default function MapCanvas() {
                         key={i}
                         points={line.points}
                         stroke={line.color}
-                        strokeWidth={12}
+                        strokeWidth={line.size}
                         tension={0.5}
                         lineCap="round"
                         lineJoin="round"

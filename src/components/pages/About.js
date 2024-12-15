@@ -7,12 +7,15 @@ export default function About() {
               About
             </h1>
             <p className="mt-6 text-pretty text-lg font-medium text-neutral-100 sm:text-xl/8">
-              Hi, I play deadlock and made this site for fun :D.
+              Hi, I play deadlock and made this site for fun :D
             </p>
-            <p className="mt-6 text-pretty text-lg font-medium text-neutral-100 sm:text-xl/8">
-              Lots of it is still WIP; however, bug reports, feedback, or ideas are appreciated.
+            <p className="mt-2 text-pretty text-md font-small text-neutral-100 sm:text-lg/8">
+              Lots of it is still WIP. Bug reports, feedback, or ideas can be sent below.
             </p>
-            <p className="mt-6 text-pretty text-lg font-medium text-neutral-100 sm:text-xl/8">
+            <p className="mt-2 text-pretty text-lg font-small text-neutral-100 sm:text-lg/8">
+              Feel free to use the images as you like but please don't edit out the watermark unless zooming in etc.
+            </p>
+            <p className="mt-6 text-pretty text-lg font-small text-neutral-100 sm:text-lg/8">
               contact: bugsythebean@gmail.com
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">

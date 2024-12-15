@@ -3,10 +3,11 @@ import { Tab, TabGroup, TabList, Disclosure, DisclosureButton, DisclosurePanel, 
 import {
     PencilIcon, ChevronDownIcon, TrashIcon,
     BookmarkIcon,
-    ArrowDownTrayIcon
+    ArrowDownTrayIcon,
+    Square2StackIcon
   } from '@heroicons/react/16/solid'
 import { useDispatch } from 'react-redux'
-import { setDrawingColor, setIsClearAgents, setIsClearAll, setIsClearLines, setIsDownload, setIsMapBackground, setIsMapDetail, setIsMapJungle, setIsMapLaneObjectives } from '../../redux/editorSlice'
+import { setDrawingColor, setDrawingSize, setIsClearAgents, setIsClearAll, setIsClearLines, setIsDownload, setIsMapBackground, setIsMapDetail, setIsMapJungle, setIsMapLaneObjectives } from '../../redux/editorSlice'
 
 export default function OptionsPannel() {
     const dispatch = useDispatch()
@@ -91,32 +92,69 @@ export default function OptionsPannel() {
                     </DisclosureButton>
                     <DisclosurePanel>
                         <RadioGroup value={color} onChange={setColor} className="grid grid-cols-5 gap-2 w-full my-2">
-                            <Radio className="bg-white h-10 rounded-lg data-[checked]:border-2 data-[checked]:border-solid box-border hover:border-2 border-dashed border-neutral-500" key={'white'} value={'#fff'}/>
-                            <Radio className="bg-zinc-500 h-10 rounded-lg data-[checked]:border-2 data-[checked]:border-solid box-border hover:border-2 border-dashed border-sky-200" key={'grey'} value={'#71717a'}/>
-                            <Radio className="bg-black h-10 rounded-lg data-[checked]:border-2 data-[checked]:border-solid box-border hover:border-2 border-dashed border-sky-200" key={'black'} value={'#000'}/>
-                            <Radio className="bg-orange-500 h-10 rounded-lg data-[checked]:border-2 data-[checked]:border-solid box-border hover:border-2 border-dashed border-sky-200" key={'orange'} value={'#f97316'}/>
-                            <Radio className="bg-yellow-500 h-10 rounded-lg data-[checked]:border-2 data-[checked]:border-solid box-border hover:border-2 border-dashed border-sky-200" key={'yellow'} value={'#eab308'}/>
-                            <Radio className="bg-green-500 h-10 rounded-lg data-[checked]:border-2 data-[checked]:border-solid box-border hover:border-2 border-dashed border-sky-200" key={'green'} value={'#22c55e'}/>
-                            <Radio className="bg-sky-500 h-10 rounded-lg data-[checked]:border-2 data-[checked]:border-solid box-border hover:border-2 border-dashed border-sky-200" key={'blue'} value={'#0ea5e9'}/>
-                            <Radio className="bg-purple-500 h-10 rounded-lg data-[checked]:border-2 data-[checked]:border-solid box-border hover:border-2 border-dashed border-sky-200" key={'purple'} value={'#a855f7'}/>
-                            <Radio className="bg-pink-500 h-10 rounded-lg data-[checked]:border-2 data-[checked]:border-solid box-border hover:border-2 border-dashed border-sky-200" key={'pink'} value={'#ec4899'}/>
-                            <Radio className="bg-rose-500 h-10 rounded-lg data-[checked]:border-2 data-[checked]:border-solid box-border hover:border-2 border-dashed border-sky-200" key={'red'} value={'#f43f5e'}/>
+                            <Radio className="bg-white h-10 rounded-lg data-[checked]:border-2 data-[checked]:border-solid box-border hover:border-2 hover:cursor-pointer border-dashed border-neutral-500" key={'white'} value={'#fff'}/>
+                            <Radio className="bg-zinc-500 h-10 rounded-lg data-[checked]:border-2 data-[checked]:border-solid box-border hover:border-2 hover:cursor-pointer border-dashed border-sky-200" key={'grey'} value={'#71717a'}/>
+                            <Radio className="bg-black h-10 rounded-lg data-[checked]:border-2 data-[checked]:border-solid box-border hover:border-2 hover:cursor-pointer border-dashed border-sky-200" key={'black'} value={'#000'}/>
+                            <Radio className="bg-orange-500 h-10 rounded-lg data-[checked]:border-2 data-[checked]:border-solid box-border hover:border-2 hover:cursor-pointer border-dashed border-sky-200" key={'orange'} value={'#f97316'}/>
+                            <Radio className="bg-yellow-500 h-10 rounded-lg data-[checked]:border-2 data-[checked]:border-solid box-border hover:border-2 hover:cursor-pointer border-dashed border-sky-200" key={'yellow'} value={'#eab308'}/>
+                            <Radio className="bg-green-500 h-10 rounded-lg data-[checked]:border-2 data-[checked]:border-solid box-border hover:border-2 hover:cursor-pointer border-dashed border-sky-200" key={'green'} value={'#22c55e'}/>
+                            <Radio className="bg-sky-500 h-10 rounded-lg data-[checked]:border-2 data-[checked]:border-solid box-border hover:border-2 hover:cursor-pointer border-dashed border-sky-200" key={'blue'} value={'#0ea5e9'}/>
+                            <Radio className="bg-purple-500 h-10 rounded-lg data-[checked]:border-2 data-[checked]:border-solid box-border hover:border-2 hover:cursor-pointer border-dashed border-sky-200" key={'purple'} value={'#a855f7'}/>
+                            <Radio className="bg-pink-500 h-10 rounded-lg data-[checked]:border-2 data-[checked]:border-solid box-border hover:border-2 hover:cursor-pointer border-dashed border-sky-200" key={'pink'} value={'#ec4899'}/>
+                            <Radio className="bg-rose-500 h-10 rounded-lg data-[checked]:border-2 data-[checked]:border-solid box-border hover:border-2 hover:cursor-pointer border-dashed border-sky-200" key={'red'} value={'#f43f5e'}/>
                         </RadioGroup>
+                        <TabGroup className={"rounded-full bg-white/5 p-0.5 my-1"} defaultIndex={2}>
+                            <TabList className="flex gap-4 items-center justify-between">
+                                <Tab className="rounded-full py-2 px-3 text-sm/6 font-semibold text-neutral-100 focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white"
+                                    onClick={() => dispatch(setDrawingSize(4))}
+                                >
+                                    <div className='rounded-full bg-white h-1 w-1'/>
+                                </Tab>
+                                <Tab className="rounded-full py-2 px-3 text-sm/6 font-semibold text-neutral-100 focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white"
+                                    onClick={() => dispatch(setDrawingSize(6))}
+                                >
+                                    <div className='rounded-full bg-white h-1.5 w-1.5'/>
+                                </Tab>
+                                <Tab className="rounded-full py-1.5 px-3 text-sm/6 font-semibold text-neutral-100 focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white"
+                                    onClick={() => dispatch(setDrawingSize(8))}
+                                >
+                                    <div className='rounded-full bg-white h-2 w-2'/>
+                                </Tab>
+                                <Tab className="rounded-full py-1 px-3 text-sm/6 font-semibold text-neutral-100 focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white"
+                                    onClick={() => dispatch(setDrawingSize(12))}
+                                >
+                                    <div className='rounded-full bg-white h-3 w-3'/>
+                                </Tab>
+                                <Tab className="rounded-full py-1 px-3 text-sm/6 font-semibold text-neutral-100 focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white"
+                                    onClick={() => dispatch(setDrawingSize(14))}
+                                >
+                                    <div className='rounded-full bg-white h-3.5 w-3.5'/>
+                                </Tab>
+                            </TabList>
+                        </TabGroup>
                     </DisclosurePanel>
                 </Disclosure>
                 {/*
                 <Disclosure as="div" className="p-3" defaultOpen={true}>
                     <DisclosureButton className="group flex w-full items-center justify-between">
                         <span className="flex items-center text-sm/6 font-medium text-white group-data-[hover]:text-white/80">
-                            <WrenchIcon className="size-4 fill-white/30 mr-1" />
-                            Tools
+                            <Square2StackIcon className="size-4 fill-white/30 mr-1" />
+                            Shapes
                         </span>
                         <ChevronDownIcon className="size-5 fill-white/60 group-data-[hover]:fill-white/50 group-data-[open]:rotate-180" />
                     </DisclosureButton>
-                    <DisclosurePanel className="mt-2 text-sm/5 text-white/50">No.</DisclosurePanel>
+                    <DisclosurePanel className="mt-2 text-sm/5 text-white/50">
+                        <div className="grid grid-cols-5 gap-2 w-full my-2">
+                            <div className="bg-zinc-400 rounded-lg box-border hover:border-2 border-dashed border-sky-200" />
+                            <div className="bg-zinc-400 h-10 rounded-lg box-border hover:border-2 border-dashed border-sky-200" />
+                            <div className="bg-zinc-400 h-10 rounded-lg box-border hover:border-2 border-dashed border-sky-200" />
+                            <div className="bg-zinc-400 h-10 rounded-lg box-border hover:border-2 border-dashed border-sky-200" />
+                            <div className="bg-zinc-400 h-10 rounded-lg box-border hover:border-2 border-dashed border-sky-200" />
+                        </div>
+                    </DisclosurePanel>
                 </Disclosure>
                 */}
-                <Disclosure as="div" className="p-3" defaultOpen={true}>
+                <Disclosure as="div" className="p-3" defaultOpen={false}>
                     <DisclosureButton className="group flex w-full items-center justify-between">
                         <span className="flex items-center text-sm/6 font-medium text-white group-data-[hover]:text-white/80">
                             <TrashIcon className="size-4 fill-white/30 mr-1" />
