@@ -145,11 +145,15 @@ export default function OptionsPannel() {
                     </DisclosureButton>
                     <DisclosurePanel className="mt-2 text-sm/5 text-white/50">
                         <div className="grid grid-cols-5 gap-2 w-full my-2">
-                            <div className="bg-zinc-400 rounded-lg box-border hover:border-2 border-dashed border-sky-200" />
-                            <div className="bg-zinc-400 h-10 rounded-lg box-border hover:border-2 border-dashed border-sky-200" />
-                            <div className="bg-zinc-400 h-10 rounded-lg box-border hover:border-2 border-dashed border-sky-200" />
-                            <div className="bg-zinc-400 h-10 rounded-lg box-border hover:border-2 border-dashed border-sky-200" />
-                            <div className="bg-zinc-400 h-10 rounded-lg box-border hover:border-2 border-dashed border-sky-200" />
+                            <div className="flex items-center justify-between rounded-lg box-border hover:border-2 border-dashed border-sky-200" draggable>
+                                <div className="ml-1 w-0 h-0 border-t-[15px] border-t-transparent border-r-[35px] border-r-sky-500 border-b-[15px] border-b-transparent" />
+                            </div>
+                            <div className="h-10 rounded-lg box-border hover:border-2 border-dashed border-sky-200" draggable>
+                                <p className="text-4xl text-sky-500 ml-1.5 mb-1">&#9733;</p>
+                            </div>
+                            <div className="bg-zinc-400 h-10 rounded-lg box-border hover:border-2 border-dashed border-sky-200" draggable />
+                            <div className="bg-zinc-400 h-10 rounded-lg box-border hover:border-2 border-dashed border-sky-200" draggable />
+                            <div className="bg-zinc-400 h-10 rounded-lg box-border hover:border-2 border-dashed border-sky-200" draggable />
                         </div>
                     </DisclosurePanel>
                 </Disclosure>
