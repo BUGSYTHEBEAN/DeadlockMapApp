@@ -18,7 +18,7 @@ export default function OptionsPannel() {
     }, [color])
 
     return(
-        <div className="min-h-full place-items-center">
+        <div className="place-items-center">
             <p className="text-3xl font-semibold text-neutral-100 my-3">Map Options</p>
             <TabGroup className={"rounded-full bg-white/5 p-2 my-2"}>
                 {
