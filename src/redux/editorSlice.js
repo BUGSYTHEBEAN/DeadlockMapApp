@@ -9,9 +9,8 @@ export const editorSlice = createSlice({
     droppedCoordinates: {x: undefined, y: undefined},
     selectedTeam: 'sapphire',
     isMapDetail: true,
-    isMapLaneObjectives: false,
+    isMapLaneObjectives: true,
     isMapJungle: false,
-    isMapBackground: true,
     isClearAll: false,
     isClearLines: false,
     isClearAgents: false,
@@ -42,9 +41,6 @@ export const editorSlice = createSlice({
     setIsMapJungle: (state, action) => {
       state.isMapJungle = action.payload
     },
-    setIsMapBackground: (state, action) => {
-      state.isMapBackground = action.payload
-    },
     setIsClearAll: (state, action) => {
       state.isClearAll = action.payload
     },
@@ -61,6 +57,6 @@ export const editorSlice = createSlice({
 })
 
 export const { setDrawingColor, setDrawingSize, setSelectedAgent, setDroppedCoordinates, setSelectedTeam, setIsMapDetail, setIsMapLaneObjectives,
-  setIsMapJungle, setIsMapBackground, setIsClearAll, setIsClearLines, setIsClearAgents, setIsDownload } = editorSlice.actions
+  setIsMapJungle, setIsClearAll, setIsClearLines, setIsClearAgents, setIsDownload } = editorSlice.actions
 
 export default editorSlice.reducer

@@ -10,7 +10,6 @@ import mapOutline from '../../assets/map/map_outline.png'
 import mapDetails from '../../assets/map/map_details.png'
 import mapLaneObjectives from '../../assets/map/map_laneobjectives.png'
 import mapJungle from '../../assets/map/map_jg.png'
-import mapBackground from '../../assets/map/map_background.png'
 
 const CANVAS_WIDTH = 800
 const CANVAS_HEIGHT = 700
@@ -32,11 +31,6 @@ const MapLaneObjectives = () => {
 
 const MapJungle = () => {
     const [image] = useImage(mapJungle)
-    return(<Image image={image} height={CANVAS_HEIGHT} width={CANVAS_WIDTH} />)
-}
-
-const MapBackground = () => {
-    const [image] = useImage(mapBackground)
     return(<Image image={image} height={CANVAS_HEIGHT} width={CANVAS_WIDTH} />)
 }
 
@@ -66,7 +60,6 @@ export default function MapCanvas() {
     const isMapDetail = useSelector((state) => state.editor.isMapDetail)
     const isMapLaneObjectives = useSelector((state) => state.editor.isMapLaneObjectives)
     const isMapJungle = useSelector((state) => state.editor.isMapJungle)
-    const isMapBackground = useSelector((state) => state.editor.isMapBackground)
     const isClearAll = useSelector((state) => state.editor.isClearAll)
     const isClearAgents = useSelector((state) => state.editor.isClearAgents)
     const isClearLines = useSelector((state) => state.editor.isClearLines)
@@ -183,7 +176,6 @@ export default function MapCanvas() {
             ref={stageRef}
         >
             <Layer>
-                {isMapBackground && <MapBackground />}
                 <MapOutline />
                 {isMapDetail && <MapDetails />}
                 {isMapLaneObjectives && <MapLaneObjectives />}

@@ -7,7 +7,7 @@ import {
     Square2StackIcon
   } from '@heroicons/react/16/solid'
 import { useDispatch } from 'react-redux'
-import { setDrawingColor, setDrawingSize, setIsClearAgents, setIsClearAll, setIsClearLines, setIsDownload, setIsMapBackground, setIsMapDetail, setIsMapJungle, setIsMapLaneObjectives } from '../../redux/editorSlice'
+import { setDrawingColor, setDrawingSize, setIsClearAgents, setIsClearAll, setIsClearLines, setIsDownload, setIsMapDetail, setIsMapJungle, setIsMapLaneObjectives } from '../../redux/editorSlice'
 
 export default function OptionsPannel() {
     const dispatch = useDispatch()
@@ -37,7 +37,7 @@ export default function OptionsPannel() {
                     </Tab>
                 </TabList>
             </TabGroup>
-            <TabGroup className={"rounded-full bg-white/5 p-2 my-2"} defaultIndex={1}>
+            <TabGroup className={"rounded-full bg-white/5 p-2 my-2"}>
                 <TabList className="flex gap-4">
                     <Tab className="rounded-full py-1 px-3 text-sm/6 font-semibold text-neutral-100 focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white"
                         onClick={() => dispatch(setIsMapLaneObjectives(true))}
@@ -60,20 +60,6 @@ export default function OptionsPannel() {
                     </Tab>
                     <Tab className="rounded-full py-1 px-3 text-sm/6 font-semibold text-neutral-100 focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white"
                         onClick={() => dispatch(setIsMapJungle(false))}
-                    >
-                        Disabled
-                    </Tab>
-                </TabList>
-            </TabGroup>
-            <TabGroup className={"rounded-full bg-white/5 p-2 my-2"}>
-                <TabList className="flex gap-4">
-                    <Tab className="rounded-full py-1 px-3 text-sm/6 font-semibold text-neutral-100 focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white"
-                        onClick={() => dispatch(setIsMapBackground(true))}
-                    >
-                        Show Background
-                    </Tab>
-                    <Tab className="rounded-full py-1 px-3 text-sm/6 font-semibold text-neutral-100 focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white"
-                        onClick={() => dispatch(setIsMapBackground(false))}
                     >
                         Disabled
                     </Tab>
