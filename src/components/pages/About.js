@@ -10,10 +10,10 @@ export default function About() {
               Hi, I play deadlock and made this site for fun :D
             </p>
             <p className="mt-2 text-pretty text-lg font-small text-neutral-100 sm:text-lg/8">
-              Feel free to use the images as you like but please don't edit out the watermark.
+              Feel free to use the images as you like.
             </p>
             <p className="mt-2 text-pretty text-lg font-small text-neutral-100 sm:text-lg/8">
-              working on new features and changes coming soon
+              working on new features and changes coming soon: bugsythebean@gmail.com for suggestions
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
               <a
