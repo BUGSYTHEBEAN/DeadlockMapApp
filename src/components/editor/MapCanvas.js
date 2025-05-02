@@ -166,7 +166,7 @@ export default function MapCanvas() {
     };
 
     return(
-        <div onDragOver={(e) => e.preventDefault()} onMouseLeave={handleMouseUp}>
+        <div onDragOver={(e) => e.preventDefault()} onMouseLeave={handleMouseUp} className='size-min'>
         <Stage
             width={CANVAS_WIDTH}
             height={CANVAS_HEIGHT}
