@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { Stage, Layer, Text, Image, Line } from 'react-konva';
 import useImage from 'use-image';
 import { useDispatch } from 'react-redux'
-import { setAgentList, setDroppedCoordinates, setIsClearAgents, setIsClearAll, setIsClearLines, setIsDownload, setIsSaveMap, setSelectedAgent } from '../../redux/editorSlice'
+import { setAgentList, setDroppedCoordinates, setIsClearAgents, setIsClearAll, setIsClearLines, setIsDownload, setIsSaveMap, setMapId, setSelectedAgent } from '../../redux/editorSlice'
 
 // map imports
 import mapOutline from '../../assets/map/map_outline.png'
@@ -156,7 +156,9 @@ export default function MapCanvas() {
 
     React.useEffect(() => {
         if(isSaveMap) {
-            handleSave()
+            createMap(lines, agentList).then(id => {
+                dispatch(setMapId(id))
+        })
             dispatch(setIsSaveMap(false))
         }
     }, [isSaveMap])
@@ -204,16 +206,6 @@ export default function MapCanvas() {
         link.click();
         document.body.removeChild(link);
     };
-
-    const handleSave = () => {
-        // TODO: Add a modal and ask if complete
-        // 1. Modal opens, confirm save
-        // 2. Exec the db write
-        // 3. Display the link with a copy text button
-        // 4. Block saving again
-        // 5. Maps TTL after 5? days w/o account?
-        // createMap(lines, agentList)
-    }
 
     return(
         <div onDragOver={(e) => e.preventDefault()} onMouseLeave={handleMouseUp} className='size-min'>
