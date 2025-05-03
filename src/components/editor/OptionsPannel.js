@@ -7,7 +7,7 @@ import {
     Square2StackIcon
   } from '@heroicons/react/16/solid'
 import { useDispatch } from 'react-redux'
-import { setDrawingColor, setDrawingSize, setIsClearAgents, setIsClearAll, setIsClearLines, setIsDownload, setIsMapDetail, setIsMapJungle, setIsMapLaneObjectives } from '../../redux/editorSlice'
+import { setDrawingColor, setDrawingSize, setIsClearAgents, setIsClearAll, setIsClearLines, setIsDownload, setIsMapDetail, setIsMapJungle, setIsMapLaneObjectives, setIsSaveMap } from '../../redux/editorSlice'
 
 export default function OptionsPannel() {
     const dispatch = useDispatch()
@@ -188,7 +188,9 @@ export default function OptionsPannel() {
                                 <ArrowDownTrayIcon className="size-4 fill-white/30 mr-1" />
                                 Download as PNG
                             </Button>
-                            <Button className="rounded-full py-1 px-3 text-sm/6 font-semibold text-neutral-100 shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-white/10">
+                            <Button className="rounded-full py-1 px-3 text-sm/6 font-semibold text-neutral-100 shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-white/10"
+                                onClick={() => dispatch(setIsSaveMap(true))}
+                            >
                                 More Options Coming Soon
                             </Button>
                         </div>

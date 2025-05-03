@@ -15,6 +15,8 @@ export const editorSlice = createSlice({
     isClearLines: false,
     isClearAgents: false,
     isDownload: false,
+    isSaveMap: false,
+    agentList: [],
   },
   reducers: {
     setDrawingColor: (state, action) => {
@@ -53,10 +55,16 @@ export const editorSlice = createSlice({
     setIsDownload: (state, action) => {
       state.isDownload = action.payload
     },
+    setIsSaveMap: (state, action) => {
+      state.isSaveMap = action.payload
+    },
+    setAgentList: (state, action) => {
+      state.agentList = action.payload
+    },
   },
 })
 
 export const { setDrawingColor, setDrawingSize, setSelectedAgent, setDroppedCoordinates, setSelectedTeam, setIsMapDetail, setIsMapLaneObjectives,
-  setIsMapJungle, setIsClearAll, setIsClearLines, setIsClearAgents, setIsDownload } = editorSlice.actions
+  setIsMapJungle, setIsClearAll, setIsClearLines, setIsClearAgents, setIsDownload, setIsSaveMap, setAgentList } = editorSlice.actions
 
 export default editorSlice.reducer
