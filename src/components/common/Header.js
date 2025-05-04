@@ -50,11 +50,11 @@ export default function Header(props) {
           </button>
         </div>
         <PopoverGroup className="hidden lg:flex lg:gap-x-12">
-          <a href="#" className="text-lg/8 font-semibold text-neutral-100">
+          <a href="/library" className="text-lg/8 font-semibold text-neutral-100" onClick={(e) => {
+            e.preventDefault()
+            navigate('/library')
+          }}>
             Library
-          </a>
-          <a href="#" className="text-lg/8 font-semibold text-neutral-100">
-            Community
           </a>
           <a href="/about" className="text-lg/8 font-semibold text-neutral-100" onClick={(e) => {
             e.preventDefault()

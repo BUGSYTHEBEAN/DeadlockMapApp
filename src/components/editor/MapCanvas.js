@@ -88,7 +88,7 @@ export default function MapCanvas(props) {
         const mapId = getMapFromQueryParams()
         if (mapId) {
             getMap(mapId).then((map) => {
-                console.log(map.at(0))
+                // console.log(map.at(0))
                 setLines(JSON.parse(map.at(0).lines))
                 const agentsDownloaded = JSON.parse(map.at(0).agents)
                 dispatch(setAgentList(agentsDownloaded))

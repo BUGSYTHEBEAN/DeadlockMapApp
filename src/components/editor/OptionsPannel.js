@@ -10,10 +10,12 @@ import {
   } from '@heroicons/react/16/solid'
 import { useDispatch } from 'react-redux'
 import { setDrawingColor, setDrawingSize, setIsClearAgents, setIsClearAll, setIsClearLines, setIsDownload, setIsMapDetail, setIsMapJungle, setIsMapLaneObjectives, setIsSaveMap } from '../../redux/editorSlice'
+import { useNavigate } from 'react-router';
 
-export default function OptionsPannel() {
+export default function OptionsPannel(props) {
     const dispatch = useDispatch()
     const mapId = useSelector((state) => state.editor.mapId)
+    const navigate = useNavigate()
 
     const [color, setColor] = React.useState('#fff')
     const [isSaveModalOpen, setIsSaveModalOpen] = React.useState(false)
@@ -27,7 +29,7 @@ export default function OptionsPannel() {
 
     React.useEffect(() => {
         if (mapId) {
-            setMapLinkText(`dlkmap.com?map=${mapId}`)
+            setMapLinkText(`dlkmap.com/strats?map=${mapId}`)
             setIsLoading(false)
             setSaveModalButtonText('Copy')
         }
@@ -255,6 +257,17 @@ export default function OptionsPannel() {
                                     {saveModalButtonText}
                                 </Button>
                             </div>
+                            {
+                                props?.session ? null :
+                                <div className='text-xs text-rose-400'>
+                                    Alert:
+                                    <span className='text-sky-300 cursor-pointer' onClick={() => {
+                                        setIsSaveModalOpen(false)
+                                        navigate('/login')
+                                    }}> log in </span>
+                                    for your link to save forever, anonymous links are ephemeral.
+                                </div>
+                            }
                         </DialogPanel>
                     </div>
                 </Dialog>

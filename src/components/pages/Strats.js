@@ -8,7 +8,7 @@ export default function Home(props) {
         <div className="bg-neutral-900 min-h-screen">
             <Header session={props.session} />
             <div className="flex flex-row">
-                <div className="basis-1/4"><OptionsPannel /></div>
+                <div className="basis-1/4"><OptionsPannel session={props.session} /></div>
                 <div className="basis-2/4"><MapCanvas session={props.session} /></div>
                 <div className="basis-1/4"><AgentPannel /></div>
             </div>

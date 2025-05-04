@@ -16,6 +16,15 @@ export async function getMap(id) {
     return data
 }
 
+export async function getMapsForUser(id) {
+    const { data, error } = await supabase
+        .from('maps')
+        .select()
+        .eq('user_id', id)
+        .limit(6)
+    return data
+}
+
 function generateRandomId8() {
     return Math.floor(Math.random() * 10000000);
 }

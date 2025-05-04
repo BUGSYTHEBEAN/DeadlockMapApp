@@ -8,6 +8,7 @@ import About from "../pages/About";
 import Login from "../pages/Login";
 import { Analytics } from "@vercel/analytics/react"
 import supabase from "../../clients/supabase"
+import Library from "../pages/Library";
 
 
 export default function Router() {
@@ -35,6 +36,7 @@ export default function Router() {
                         <Route path="/strats" element={<Strats session={session} />} />
                         <Route path="/about" element={<About session={session} />} />
                         <Route path="/login" element={<Login session={session} />} />
+                        <Route path="/library" element={<Library session={session} />} />
                         <Route path="*" element={<NotFound/>} />
                     </Routes>
                 </BrowserRouter>

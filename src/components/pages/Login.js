@@ -22,12 +22,12 @@ export default function Login(props) {
                 <h1 className="mt-4 text-balance text-5xl font-semibold tracking-tight text-sky-400 sm:text-5xl pb-4">
                     Log In
                 </h1>
-                <p className="text-white w-80 text-sm">
-                    Logging in let you save maps, and return to them later in your library.
+                <p className="text-white w-80 text-sm mb-4">
+                    Logging in lets you save maps, and return to them later in your library.
                     It also allows you to create permalinks to share maps with others.
                 </p>
                 <div className="w-80">
-                    <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} dark providers={[]} additionalData={'displayName'}/>
+                    <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} dark providers={['discord']} additionalData={'displayName'}/>
                 </div>
                 </div>
             </main>
