@@ -3,13 +3,16 @@ import { useSelector } from 'react-redux'
 import { Stage, Layer, Text, Image, Line } from 'react-konva';
 import useImage from 'use-image';
 import { useDispatch } from 'react-redux'
-import { setDroppedCoordinates, setIsClearAgents, setIsClearAll, setIsClearLines, setIsDownload, setSelectedAgent } from '../../redux/editorSlice'
+import { setAgentList, setDroppedCoordinates, setIsClearAgents, setIsClearAll, setIsClearLines, setIsDownload, setIsSaveMap, setMapId, setSelectedAgent } from '../../redux/editorSlice'
 
 // map imports
 import mapOutline from '../../assets/map/map_outline.png'
 import mapDetails from '../../assets/map/map_details.png'
 import mapLaneObjectives from '../../assets/map/map_laneobjectives.png'
 import mapJungle from '../../assets/map/map_jg.png'
+import { createMap, getMap } from '../../tables/maps';
+import { getMapFromQueryParams } from '../../utils/queryUtils';
+import { getUrlFromAgentId } from './AgentPannel';
 
 const CANVAS_WIDTH = 800
 const CANVAS_HEIGHT = 700
@@ -35,9 +38,16 @@ const MapJungle = () => {
 }
 
 const Agent = (props) => {
-    const [image] = useImage(props.url)
+    const dispatch = useDispatch()
+    const agentList = useSelector((state) => state.editor.agentList)
+    const [image] = useImage(getUrlFromAgentId(props.agentId))
     return(
         <Image
+            onDragEnd={(e) => {
+                dispatch(setAgentList(agentList.map((v, i) => i === props.index 
+                    ? {x: Math.floor(e.target.x()), y: Math.floor(e.target.y()), agentId: props.agentId, team: props.team}
+                    : v)))
+            }}
             image={image}
             width={42}
             height={57}
@@ -49,7 +59,7 @@ const Agent = (props) => {
         />)
 }
 
-export default function MapCanvas() {
+export default function MapCanvas(props) {
     const dispatch = useDispatch()
     // State vars
     const drawingColor = useSelector((state) => state.editor.drawingColor)
@@ -64,12 +74,28 @@ export default function MapCanvas() {
     const isClearAgents = useSelector((state) => state.editor.isClearAgents)
     const isClearLines = useSelector((state) => state.editor.isClearLines)
     const isDownload = useSelector((state) => state.editor.isDownload)
+    const isSaveMap = useSelector((state) => state.editor.isSaveMap)
+    const agentList = useSelector((state) => state.editor.agentList)
 
     const [lines, setLines] = React.useState([]);
     const [agents, setAgents] = React.useState([]);
+
     const isDrawing = React.useRef(false);
 
     const stageRef = React.useRef(null);
+
+    React.useEffect(() => {
+        const mapId = getMapFromQueryParams()
+        if (mapId) {
+            getMap(mapId).then((map) => {
+                // console.log(map.at(0))
+                setLines(JSON.parse(map.at(0).lines))
+                const agentsDownloaded = JSON.parse(map.at(0).agents)
+                dispatch(setAgentList(agentsDownloaded))
+                setAgents(agentsDownloaded.map((a, i) => <Agent agentId={a.agentId} key={i} team={a.team} index={i} x={a.x} y={a.y} />))
+            })
+        }
+    }, [])
 
     React.useEffect(() => {
         if(selectedAgent.length > 0 && droppedCoordinates.x && droppedCoordinates.y && stageRef != null) {
@@ -81,19 +107,24 @@ export default function MapCanvas() {
                 dispatch(setDroppedCoordinates({x: undefined, y: undefined}))
                 return
             }
+            dispatch(setAgentList([...agentList, {x: droppedCoordinates.x - canvaspos.x, y: droppedCoordinates.y - canvaspos.y, agentId: selectedAgent, team: selectedTeam}]))
             setAgents(agents.concat(<Agent
-                url={selectedAgent}
+                agentId={selectedAgent}
                 key={agents.length}
                 team={selectedTeam}
                 x={droppedCoordinates.x - canvaspos.x}
                 y={droppedCoordinates.y - canvaspos.y}
+                index={agentList.length}
             />))
             dispatch(setSelectedAgent(""))
             dispatch(setDroppedCoordinates({x: undefined, y: undefined}))
             return
         }
         if(selectedAgent.length > 0) {
-            setAgents(agents.concat(<Agent url={selectedAgent} key={agents.length} team={selectedTeam} />))
+            const x = Math.floor(CANVAS_WIDTH / 2)
+            const y = Math.floor(CANVAS_HEIGHT / 2)
+            dispatch(setAgentList([...agentList, {x: x, y: y, agentId: selectedAgent, team: selectedTeam}]))
+            setAgents(agents.concat(<Agent agentId={selectedAgent} key={agents.length} team={selectedTeam} index={agentList.length} x={x} y={y}/>))
             dispatch(setSelectedAgent(""))
         }
     }, [selectedAgent])
@@ -102,10 +133,12 @@ export default function MapCanvas() {
         if(isClearAll) {
             setLines([])
             setAgents([])
+            setAgentList([])
             dispatch(setIsClearAll(false))
         }
         if(isClearAgents) {
             setAgents([])
+            setAgentList([])
             dispatch(setIsClearAgents(false))
         }
         if(isClearLines) {
@@ -120,6 +153,15 @@ export default function MapCanvas() {
             dispatch(setIsDownload(false))
         }
     }, [isDownload])
+
+    React.useEffect(() => {
+        if(isSaveMap) {
+            createMap(lines, agentList, props.session?.user?.id).then(id => {
+                dispatch(setMapId(id))
+        })
+            dispatch(setIsSaveMap(false))
+        }
+    }, [isSaveMap])
 
     const handleMouseDown = (e) => {
         isDrawing.current = true;

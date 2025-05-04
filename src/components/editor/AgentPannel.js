@@ -30,6 +30,38 @@ import { useDispatch } from 'react-redux'
 import { setDroppedCoordinates, setSelectedAgent, setSelectedTeam } from '../../redux/editorSlice'
 import { Tab, TabGroup, TabList } from '@headlessui/react'
 
+export function getUrlFromAgentId(id) {
+    switch(id) {
+        case 'abrams': return abrams
+        case 'bebop': return bebop
+        case 'calico': return calico
+        case 'dynamo': return dynamo
+        case 'greyTalon': return greyTalon
+        case 'haze': return haze
+        case 'holliday': return holliday
+        case 'infernus': return infernus
+        case 'ivy': return ivy
+        case 'kelvin': return kelvin
+        case 'ladyGeist': return ladyGeist
+        case 'lash': return lash
+        case 'mcginnis': return mcginnis
+        case 'mirage': return mirage
+        case 'moNKrill': return moNKrill
+        case 'paradox': return paradox
+        case 'pocket': return pocket
+        case 'seven': return seven
+        case 'shiv': return shiv
+        case 'tms': return tms
+        case 'vindicta': return vindicta
+        case 'viscous': return viscous
+        case 'vyper': return vyper
+        case 'warden': return warden
+        case 'wraith': return wraith
+        case 'yamato': return yamato
+        default: return abrams
+    }
+}
+
 function Agent(props) {
     const dispatch = useDispatch()
 
@@ -37,8 +69,8 @@ function Agent(props) {
 
     return(
         <img
-            src={props.agent}
-            className={`rounded-lg ${background} hover:bg-zinc-100 cursor-grab`}
+            src={props.src}
+            className={`rounded-lg ${background} hover:bg-zinc-100 cursor-grab w-full max-w-16`}
             onClick={(e) => {
                 dispatch(setSelectedAgent(props.agent))
             }}
@@ -77,32 +109,32 @@ export default function AgentPannel() {
             </TabGroup>
             <div className='overflow-y-auto w-4/5 p-2'>
                 <div className="grid grid-cols-4 gap-2">
-                    <Agent agent={abrams} team={selectedTeam} />
-                    <Agent agent={bebop} team={selectedTeam} />
-                    <Agent agent={calico} team={selectedTeam} />
-                    <Agent agent={dynamo} team={selectedTeam} />
-                    <Agent agent={greyTalon} team={selectedTeam} />
-                    <Agent agent={haze} team={selectedTeam} />
-                    <Agent agent={holliday} team={selectedTeam} />
-                    <Agent agent={infernus} team={selectedTeam} />
-                    <Agent agent={ivy} team={selectedTeam} />
-                    <Agent agent={kelvin} team={selectedTeam} />
-                    <Agent agent={ladyGeist} team={selectedTeam} />
-                    <Agent agent={lash} team={selectedTeam} />
-                    <Agent agent={mcginnis} team={selectedTeam} />
-                    <Agent agent={mirage} team={selectedTeam} />
-                    <Agent agent={moNKrill} team={selectedTeam} />
-                    <Agent agent={paradox} team={selectedTeam} />
-                    <Agent agent={pocket} team={selectedTeam} />
-                    <Agent agent={seven} team={selectedTeam} />
-                    <Agent agent={shiv} team={selectedTeam} />
-                    <Agent agent={tms} team={selectedTeam} />
-                    <Agent agent={vindicta} team={selectedTeam} />
-                    <Agent agent={viscous} team={selectedTeam} />
-                    <Agent agent={vyper} team={selectedTeam} />
-                    <Agent agent={warden} team={selectedTeam} />
-                    <Agent agent={wraith} team={selectedTeam} />
-                    <Agent agent={yamato} team={selectedTeam} />
+                    <Agent src={abrams} agent={'abrams'} team={selectedTeam} />
+                    <Agent src={bebop} agent={'bebop'} team={selectedTeam} />
+                    <Agent src={calico} agent={'calico'} team={selectedTeam} />
+                    <Agent src={dynamo} agent={'dynamo'} team={selectedTeam} />
+                    <Agent src={greyTalon}  agent={'greyTalon'} team={selectedTeam} />
+                    <Agent src={haze} agent={'haze'} team={selectedTeam} />
+                    <Agent src={holliday} agent={'holliday'} team={selectedTeam} />
+                    <Agent src={infernus} agent={'infernus'} team={selectedTeam} />
+                    <Agent src={ivy} agent={'ivy'} team={selectedTeam} />
+                    <Agent src={kelvin}  agent={'kelvin'} team={selectedTeam} />
+                    <Agent src={ladyGeist} agent={'ladyGeist'} team={selectedTeam} />
+                    <Agent src={lash} agent={'lash'} team={selectedTeam} />
+                    <Agent src={mcginnis} agent={'mcginnis'} team={selectedTeam} />
+                    <Agent src={mirage} agent={'mirage'} team={selectedTeam} />
+                    <Agent src={moNKrill} agent={'moNKrill'} team={selectedTeam} />
+                    <Agent src={paradox} agent={'paradox'} team={selectedTeam} />
+                    <Agent src={pocket} agent={'pocket'} team={selectedTeam} />
+                    <Agent src={seven} agent={'seven'} team={selectedTeam} />
+                    <Agent src={shiv} agent={'shiv'} team={selectedTeam} />
+                    <Agent src={tms} agent={'tms'} team={selectedTeam} />
+                    <Agent src={vindicta} agent={'vindicta'} team={selectedTeam} />
+                    <Agent src={viscous} agent={'viscous'} team={selectedTeam} />
+                    <Agent src={vyper} agent={'vyper'} team={selectedTeam} />
+                    <Agent src={warden} agent={'warden'} team={selectedTeam} />
+                    <Agent src={wraith} agent={'wraith'} team={selectedTeam} />
+                    <Agent src={yamato} agent={'yamato'} team={selectedTeam} />
                 </div>
             </div>
         </div>

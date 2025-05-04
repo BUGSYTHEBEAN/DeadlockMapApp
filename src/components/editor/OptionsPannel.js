@@ -1,21 +1,57 @@
 import React from 'react';
-import { Tab, TabGroup, TabList, Disclosure, DisclosureButton, DisclosurePanel, Button, RadioGroup, Radio } from '@headlessui/react'
+import { useSelector } from 'react-redux'
+import { Tab, TabGroup, TabList, Disclosure, DisclosureButton, DisclosurePanel, Button, RadioGroup, Radio, Dialog, DialogPanel, DialogTitle, Description, Input } from '@headlessui/react'
 import {
     PencilIcon, ChevronDownIcon, TrashIcon,
     BookmarkIcon,
     ArrowDownTrayIcon,
-    Square2StackIcon
+    Square2StackIcon,
+    LinkIcon
   } from '@heroicons/react/16/solid'
 import { useDispatch } from 'react-redux'
-import { setDrawingColor, setDrawingSize, setIsClearAgents, setIsClearAll, setIsClearLines, setIsDownload, setIsMapDetail, setIsMapJungle, setIsMapLaneObjectives } from '../../redux/editorSlice'
+import { setDrawingColor, setDrawingSize, setIsClearAgents, setIsClearAll, setIsClearLines, setIsDownload, setIsMapDetail, setIsMapJungle, setIsMapLaneObjectives, setIsSaveMap } from '../../redux/editorSlice'
+import { useNavigate } from 'react-router';
 
-export default function OptionsPannel() {
+export default function OptionsPannel(props) {
     const dispatch = useDispatch()
+    const mapId = useSelector((state) => state.editor.mapId)
+    const navigate = useNavigate()
+
     const [color, setColor] = React.useState('#fff')
+    const [isSaveModalOpen, setIsSaveModalOpen] = React.useState(false)
+    const [saveModalButtonText, setSaveModalButtonText] = React.useState('Save Map')
+    const [isLoading, setIsLoading] = React.useState(false)
+    const [mapLinkText, setMapLinkText] = React.useState('dlkmap.com?map=your-map-here')
 
     React.useEffect(() => {
         dispatch(setDrawingColor(color))
     }, [color])
+
+    React.useEffect(() => {
+        if (mapId) {
+            setMapLinkText(`dlkmap.com/strats?map=${mapId}`)
+            setIsLoading(false)
+            setSaveModalButtonText('Copy')
+        }
+    }, [mapId])
+
+    const handleSaveButton = () => {
+        if (mapId) {
+            navigator.clipboard.writeText(mapLinkText)
+            try {
+                setSaveModalButtonText('Copied')
+                setTimeout(() => {
+                    setSaveModalButtonText('Copy')
+                }, 1000);
+            } catch {
+                console.log('Error copying to clipboard!')
+            }
+            return
+        }
+        dispatch(setIsSaveMap(true))
+        setSaveModalButtonText('Loading...')
+        setIsLoading(true)
+    }
 
     return(
         <div className="place-items-center">
@@ -188,12 +224,53 @@ export default function OptionsPannel() {
                                 <ArrowDownTrayIcon className="size-4 fill-white/30 mr-1" />
                                 Download as PNG
                             </Button>
-                            <Button className="rounded-full py-1 px-3 text-sm/6 font-semibold text-neutral-100 shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-white/10">
-                                More Options Coming Soon
+                            <Button className="flex flex-row justify-center place-items-center rounded-full py-1 px-3 text-sm/6 font-semibold text-neutral-100 shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-white/10"
+                                onClick={() => setIsSaveModalOpen(true)}
+                            >
+                                <LinkIcon className="size-4 fill-white/30 mr-1" />
+                                <div className='pr-2 text-transparent bg-clip-text bg-gradient-to-br from-purple-300 to-sky-500 font-bold'>NEW</div>
+                                Save & Create Link
                             </Button>
                         </div>
                     </DisclosurePanel>
                 </Disclosure>
+                <Dialog open={isSaveModalOpen} onClose={() => setIsSaveModalOpen(false)} className={''}>
+                    <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
+                        <DialogPanel className="max-w-lg space-y-4 border-2 bg-neutral-950 p-8 text-white rounded-3xl">
+                            <DialogTitle className="flex flex-row font-bold text-2xl">
+                                <div className='pr-2 text-transparent bg-clip-text bg-gradient-to-br from-purple-300 to-sky-500'>NEW</div>
+                                Save & Create Link
+                                <Button className="rounded-md py-0.5 px-3 ml-auto mr-0 text-sm/6 font-semibold text-neutral-100 shadow-inner shadow-white/20 focus:outline-none data-[hover]:bg-white/10"
+                                    onClick={() => setIsSaveModalOpen(false)}
+                                >
+                                    Close
+                                </Button>
+                            </DialogTitle>
+                            <Description className={'text-gray-400 text-md'}>Save this map on dlkmap and generate a permalink to it.</Description>
+                            <div className='flex flex-row'>
+                                <Input className={'rounded-md h-8 w-full px-2 mr-2 bg-neutral-800'} type='text' disabled value={mapLinkText}/>
+                                <Button 
+                                    className={`rounded-md py-0.5 px-3 ml-auto mr-0 w-32 text-sm/6 font-semibold text-neutral-100 border-2 shadow-inner shadow-white/20 focus:outline-none ${saveModalButtonText === 'Copied' ? 'bg-green-500 data-[hover]:bg-green-500' : 'data-[hover]:bg-sky-700'}`}
+                                    onClick={handleSaveButton}
+                                    disabled={isLoading}
+                                >
+                                    {saveModalButtonText}
+                                </Button>
+                            </div>
+                            {
+                                props?.session ? null :
+                                <div className='text-xs text-rose-400'>
+                                    Alert:
+                                    <span className='text-sky-300 cursor-pointer' onClick={() => {
+                                        setIsSaveModalOpen(false)
+                                        navigate('/login')
+                                    }}> log in </span>
+                                    for your link to save forever, anonymous links are ephemeral.
+                                </div>
+                            }
+                        </DialogPanel>
+                    </div>
+                </Dialog>
             </div>
         </div>
     )
