@@ -70,7 +70,7 @@ function Agent(props) {
     return(
         <img
             src={props.src}
-            className={`rounded-lg ${background} hover:bg-zinc-100 cursor-grab`}
+            className={`rounded-lg ${background} hover:bg-zinc-100 cursor-grab w-full max-w-16`}
             onClick={(e) => {
                 dispatch(setSelectedAgent(props.agent))
             }}

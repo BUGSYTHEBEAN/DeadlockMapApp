@@ -59,7 +59,7 @@ const Agent = (props) => {
         />)
 }
 
-export default function MapCanvas() {
+export default function MapCanvas(props) {
     const dispatch = useDispatch()
     // State vars
     const drawingColor = useSelector((state) => state.editor.drawingColor)
@@ -156,7 +156,7 @@ export default function MapCanvas() {
 
     React.useEffect(() => {
         if(isSaveMap) {
-            createMap(lines, agentList).then(id => {
+            createMap(lines, agentList, props.session?.user?.id).then(id => {
                 dispatch(setMapId(id))
         })
             dispatch(setIsSaveMap(false))

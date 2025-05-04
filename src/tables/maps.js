@@ -1,14 +1,10 @@
-import { createClient } from "@supabase/supabase-js";
+import supabase from "../clients/supabase"
 
-const supabaseUrl = process.env.REACT_APP_SUPABASE_URL
-const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY
-const supabase = createClient(supabaseUrl, supabaseKey)
-
-export async function createMap(lines, agents) {
+export async function createMap(lines, agents, userId) {
     const id = generateRandomId8()
     const { error } = await supabase
         .from('maps')
-        .insert({ id: id, agents: JSON.stringify(agents), lines: JSON.stringify(lines)})
+        .insert({ id: id, agents: JSON.stringify(agents), lines: JSON.stringify(lines), user_id: userId})
     return id
 }
 
