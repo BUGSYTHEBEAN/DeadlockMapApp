@@ -27,7 +27,10 @@ export default function Library(props) {
                 {
                     props?.session 
                         ? <div>
-                            <p className="text-white p-1">Note: For now this will only show your first 6 maps, working on pages!</p>
+                            {
+                                maps.length === 0 ? <p className="text-white">It looks like you don't have any maps, go to the home page to start creating!</p>
+                                : <p className="text-white p-1">Note: For now this will only show your first 6 maps, working on pages!</p>
+                            }
                             <div className="grid grid-cols-3 gap-4">
                                 {maps.map((m, i) => <MapPreview map={m} key={i}/>)}
                             </div>
