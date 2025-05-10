@@ -5,8 +5,8 @@ import {
     PencilIcon, ChevronDownIcon, TrashIcon,
     BookmarkIcon,
     ArrowDownTrayIcon,
-    Square2StackIcon,
-    LinkIcon
+    LinkIcon,
+    GlobeAmericasIcon
   } from '@heroicons/react/16/solid'
 import { useDispatch } from 'react-redux'
 import { setDrawingColor, setDrawingSize, setIsClearAgents, setIsClearAll, setIsClearLines, setIsDownload, setIsMapDetail, setIsMapJungle, setIsMapLaneObjectives, setIsSaveMap } from '../../redux/editorSlice'
@@ -55,55 +55,63 @@ export default function OptionsPannel(props) {
 
     return(
         <div className="place-items-center">
-            <p className="text-3xl font-semibold text-neutral-100 my-3">Map Options</p>
-            <TabGroup className={"rounded-full bg-white/5 p-2 my-2"}>
-                {
-                // https://headlessui.com/react/tabs
-                }
-                <TabList className="flex gap-4">
-                    <Tab className="rounded-full py-1 px-3 text-sm/6 font-semibold text-neutral-100 focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white"
-                        onClick={() => dispatch(setIsMapDetail(true))}
-                    >
-                        Show Details
-                    </Tab>
-                    <Tab className="rounded-full py-1 px-3 text-sm/6 font-semibold text-neutral-100 focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white"
-                        onClick={() => dispatch(setIsMapDetail(false))}
-                    >
-                        Disabled
-                    </Tab>
-                </TabList>
-            </TabGroup>
-            <TabGroup className={"rounded-full bg-white/5 p-2 my-2"}>
-                <TabList className="flex gap-4">
-                    <Tab className="rounded-full py-1 px-3 text-sm/6 font-semibold text-neutral-100 focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white"
-                        onClick={() => dispatch(setIsMapLaneObjectives(true))}
-                    >
-                        Show Lanes
-                    </Tab>
-                    <Tab className="rounded-full py-1 px-3 text-sm/6 font-semibold text-neutral-100 focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white"
-                        onClick={() => dispatch(setIsMapLaneObjectives(false))}
-                    >
-                        Disabled
-                    </Tab>
-                </TabList>
-            </TabGroup>
-            <TabGroup className={"rounded-full bg-white/5 p-2 my-2"} defaultIndex={1}>
-                <TabList className="flex gap-4">
-                    <Tab className="rounded-full py-1 px-3 text-sm/6 font-semibold text-neutral-100 focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white"
-                        onClick={() => dispatch(setIsMapJungle(true))}
-                    >
-                        Show Jungle
-                    </Tab>
-                    <Tab className="rounded-full py-1 px-3 text-sm/6 font-semibold text-neutral-100 focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white"
-                        onClick={() => dispatch(setIsMapJungle(false))}
-                    >
-                        Disabled
-                    </Tab>
-                </TabList>
-            </TabGroup>
-            
-            <p className="text-3xl font-semibold text-neutral-100 my-3">Edit Options</p>
             <div className="mx-auto w-72 max-w-lg divide-y divide-white/5 rounded-xl bg-white/5">
+                <Disclosure as="div" className="p-3" defaultOpen={true}>
+                    <DisclosureButton className="group flex w-full items-center justify-between">
+                        <span className="flex items-center text-sm/6 font-medium text-white group-data-[hover]:text-white/80">
+                            <GlobeAmericasIcon className="size-4 fill-white/30 mr-1" />
+                            Map Options
+                        </span>
+                        <ChevronDownIcon className="size-5 fill-white/60 group-data-[hover]:fill-white/50 group-data-[open]:rotate-180" />
+                    </DisclosureButton>
+                    <DisclosurePanel className="mt-2 text-sm/5 text-white/50">
+                    <TabGroup className={"rounded-full bg-white/5 p-2 my-2"}>
+                        {
+                        // https://headlessui.com/react/tabs
+                        }
+                        <TabList className="flex gap-4">
+                            <Tab className="rounded-full py-1 px-3 w-1/2 text-sm/6 font-semibold text-neutral-100 focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white"
+                                onClick={() => dispatch(setIsMapDetail(true))}
+                            >
+                                Show Details
+                            </Tab>
+                            <Tab className="rounded-full py-1 px-3 w-1/2 text-sm/6 font-semibold text-neutral-100 focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white"
+                                onClick={() => dispatch(setIsMapDetail(false))}
+                            >
+                                Disabled
+                            </Tab>
+                        </TabList>
+                    </TabGroup>
+                    <TabGroup className={"rounded-full bg-white/5 p-2 my-2"}>
+                        <TabList className="flex gap-4">
+                            <Tab className="rounded-full py-1 px-3 w-1/2 text-sm/6 font-semibold text-neutral-100 focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white"
+                                onClick={() => dispatch(setIsMapLaneObjectives(true))}
+                            >
+                                Show Lanes
+                            </Tab>
+                            <Tab className="rounded-full py-1 px-3 w-1/2 text-sm/6 font-semibold text-neutral-100 focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white"
+                                onClick={() => dispatch(setIsMapLaneObjectives(false))}
+                            >
+                                Disabled
+                            </Tab>
+                        </TabList>
+                    </TabGroup>
+                    <TabGroup className={"rounded-full bg-white/5 p-2 my-2"} defaultIndex={1}>
+                        <TabList className="flex gap-4">
+                            <Tab className="rounded-full py-1 px-3 w-1/2 text-sm/6 font-semibold text-neutral-100 focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white"
+                                onClick={() => dispatch(setIsMapJungle(true))}
+                            >
+                                Show Jungle
+                            </Tab>
+                            <Tab className="rounded-full py-1 px-3 w-1/2 text-sm/6 font-semibold text-neutral-100 focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white"
+                                onClick={() => dispatch(setIsMapJungle(false))}
+                            >
+                                Disabled
+                            </Tab>
+                        </TabList>
+                    </TabGroup>
+                    </DisclosurePanel>
+                </Disclosure>
                 <Disclosure as="div" className="p-3" defaultOpen={true}>
                     <DisclosureButton className="group flex w-full items-center justify-between">
                         <span className="flex items-center text-sm/6 font-medium text-white group-data-[hover]:text-white/80">
@@ -180,7 +188,7 @@ export default function OptionsPannel(props) {
                     </DisclosurePanel>
                 </Disclosure>
                 */}
-                <Disclosure as="div" className="p-3" defaultOpen={false}>
+                <Disclosure as="div" className="p-3" defaultOpen={true}>
                     <DisclosureButton className="group flex w-full items-center justify-between">
                         <span className="flex items-center text-sm/6 font-medium text-white group-data-[hover]:text-white/80">
                             <TrashIcon className="size-4 fill-white/30 mr-1" />
