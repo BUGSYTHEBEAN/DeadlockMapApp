@@ -129,32 +129,32 @@ export default function Header(props) {
           <div className="mt-6 flow-root">
             <div className="-my-6 divide-y divide-neutral-100/10">
               <div className="space-y-2 py-6">
-                <a
-                  href="#"
-                  className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-neutral-100 hover:bg-gray-50"
-                >
-                  Features
+                <a href="/library" className="text-lg/8 font-semibold text-neutral-100 flex flex-row" onClick={(e) => {
+                  e.preventDefault()
+                  navigate('/library')
+                }}>
+                  <div className='pr-2 text-transparent bg-clip-text bg-gradient-to-br from-purple-300 to-sky-500 font-bold'>NEW</div>
+                  Library
                 </a>
-                <a
-                  href="#"
-                  className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-neutral-100 hover:bg-gray-50"
-                >
-                  Marketplace
-                </a>
-                <a
-                  href="#"
-                  className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-neutral-100 hover:bg-gray-50"
-                >
-                  Company
+                <a href="/about" className="text-lg/8 font-semibold text-neutral-100" onClick={(e) => {
+                  e.preventDefault()
+                  navigate('/about')
+                }}>
+                  About
                 </a>
               </div>
               <div className="py-6">
-                <a
-                  href="#"
-                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-neutral-100 hover:bg-gray-50"
-                >
-                  Coming Soon ...
-                </a>
+                {
+                  props.session
+                    ? <button className="text-lg/8 font-semibold text-sky-400" onClick={() => setIsLogoutOpen(true)}>Logout</button>
+                    : <a href="/login" className="text-lg/8 font-semibold text-sky-400" onClick={(e) => {
+                      e.preventDefault()
+                      navigate('/login')
+                    }}>
+                        Log In <span aria-hidden="true">&rarr;</span>
+                      </a>
+
+                }
               </div>
             </div>
           </div>

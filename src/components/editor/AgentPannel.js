@@ -68,18 +68,20 @@ function Agent(props) {
     const background = props.team === 'sapphire' ? 'bg-sky-500' : props.team === 'amber' ? 'bg-amber-500' : ''
 
     return(
-        <img
-            src={props.src}
-            className={`rounded-lg ${background} hover:bg-zinc-100 cursor-grab w-full max-w-16`}
-            onClick={(e) => {
-                dispatch(setSelectedAgent(props.agent))
-            }}
-            draggable={true}
-            onDragEnd={(e) => {
-                dispatch(setSelectedAgent(props.agent))
-                dispatch(setDroppedCoordinates({x: e.pageX, y: e.pageY}))
-            }}
-        />
+        <div className={`rounded-lg ${background} w-full max-w-16 overflow-hidden hover:bg-zinc-100`}>
+            <img
+                src={props.src}
+                className={`cursor-grab w-full transition-transform duration-700 ease-out scale-105 hover:scale-125`}
+                onClick={(e) => {
+                    dispatch(setSelectedAgent(props.agent))
+                }}
+                draggable={true}
+                onDragEnd={(e) => {
+                    dispatch(setSelectedAgent(props.agent))
+                    dispatch(setDroppedCoordinates({x: e.pageX, y: e.pageY}))
+                }}
+            />
+        </div>
     )
 }
 
@@ -103,11 +105,11 @@ export default function AgentPannel() {
                     <Tab className="rounded-full py-1 px-3 text-sm/6 font-semibold text-neutral-100 focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-zinc-600 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white"
                         onClick={() => dispatch(setSelectedTeam(''))}
                     >
-                        No Background
+                        None
                     </Tab>
                 </TabList>
             </TabGroup>
-            <div className='overflow-y-auto w-4/5 p-2'>
+            <div className='overflow-y-auto w-full 2xl:w-4/5 p-2'>
                 <div className="grid grid-cols-4 gap-2">
                     <Agent src={abrams} agent={'abrams'} team={selectedTeam} />
                     <Agent src={bebop} agent={'bebop'} team={selectedTeam} />
