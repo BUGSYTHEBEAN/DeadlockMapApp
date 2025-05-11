@@ -97,23 +97,28 @@ export default function MapCanvas(props) {
         }
     }, [])
 
+    const getMousePosOnCanvas = (mousePos) => {
+        const stagePos = stageRef.current.position()
+        const stageScale = stageRef.current.scaleX()
+        return {x: (mousePos.x - stagePos.x) / stageScale, y: (mousePos.y - stagePos.y) / stageScale}
+    }
+
     React.useEffect(() => {
         if(selectedAgent.length > 0 && droppedCoordinates.x && droppedCoordinates.y && stageRef != null) {
             const canvaspos = stageRef.current.attrs.container.getBoundingClientRect()
-            const correctedX = droppedCoordinates.x - canvaspos.x
-            const correctedY = droppedCoordinates.y - canvaspos.y
-            if (correctedX < 0 || correctedX > CANVAS_WIDTH || correctedY < 0 || correctedY > CANVAS_HEIGHT) {
+            const dropPos = getMousePosOnCanvas({x: droppedCoordinates.x - canvaspos.x, y: droppedCoordinates.y - canvaspos.y})
+            if (dropPos.x < 0 || dropPos.x > CANVAS_WIDTH || dropPos.y < 0 || dropPos.y > CANVAS_HEIGHT) {
                 dispatch(setSelectedAgent(""))
                 dispatch(setDroppedCoordinates({x: undefined, y: undefined}))
                 return
             }
-            dispatch(setAgentList([...agentList, {x: droppedCoordinates.x - canvaspos.x, y: droppedCoordinates.y - canvaspos.y, agentId: selectedAgent, team: selectedTeam}]))
+            dispatch(setAgentList([...agentList, {x: dropPos.x, y: dropPos.y, agentId: selectedAgent, team: selectedTeam}]))
             setAgents(agents.concat(<Agent
                 agentId={selectedAgent}
                 key={agents.length}
                 team={selectedTeam}
-                x={droppedCoordinates.x - canvaspos.x}
-                y={droppedCoordinates.y - canvaspos.y}
+                x={dropPos.x}
+                y={dropPos.y}
                 index={agentList.length}
             />))
             dispatch(setSelectedAgent(""))
@@ -164,10 +169,10 @@ export default function MapCanvas(props) {
     }, [isSaveMap])
 
     const handleMouseDown = (e) => {
-        isDrawing.current = true;
-        const pos = e.target.getStage().getPointerPosition();
-        setLines([...lines, { points: [pos.x, pos.y], color: drawingColor, size: drawingSize }]);
-    };
+        isDrawing.current = true
+        const pos = getMousePosOnCanvas(e.target.getStage().getPointerPosition())
+        setLines([...lines, { points: [pos.x, pos.y], color: drawingColor, size: drawingSize }])
+    }
 
     const handleMouseMove = (e) => {
         // no drawing - skipping
@@ -175,7 +180,7 @@ export default function MapCanvas(props) {
             return;
         }
         const stage = e.target.getStage();
-        const point = stage.getPointerPosition();
+        const point = getMousePosOnCanvas(stage.getPointerPosition());
         let lastLine = lines[lines.length - 1];
         //skip adding if points are very close
         if(lastLine.points.length >= 2) {
@@ -207,6 +212,39 @@ export default function MapCanvas(props) {
         document.body.removeChild(link);
     };
 
+    const handleWheel = (e) => {
+        e.evt.preventDefault();
+
+        const stage = stageRef.current;
+        const oldScale = stage.scaleX();
+        const pointer = stage.getPointerPosition();
+
+        const mousePointTo = {
+            x: (pointer.x - stage.x()) / oldScale,
+            y: (pointer.y - stage.y()) / oldScale,
+        };
+
+        const direction = e.evt.deltaY > 0 ? -1 : 1;
+
+        const scaleBy = 1.03;
+        let newScale = direction > 0 ? oldScale * scaleBy : oldScale / scaleBy;
+
+        if (newScale <= 1) {
+            stage.scale({ x: 1, y: 1 });
+            stage.position({x: 0, y: 0});
+            return
+        } else if (newScale > 2.5) {
+            newScale = 2.5
+        }
+        stage.scale({ x: newScale, y: newScale });
+
+        const newPos = {
+            x: pointer.x - mousePointTo.x * newScale,
+            y: pointer.y - mousePointTo.y * newScale,
+        };
+        stage.position(newPos);
+    };
+
     return(
         <div onDragOver={(e) => e.preventDefault()} onMouseLeave={handleMouseUp} className='size-min'>
         <Stage
@@ -215,6 +253,7 @@ export default function MapCanvas(props) {
             onMouseDown={handleMouseDown}
             onMousemove={handleMouseMove}
             onMouseup={handleMouseUp}
+            onWheel={handleWheel}
             ref={stageRef}
         >
             <Layer>
