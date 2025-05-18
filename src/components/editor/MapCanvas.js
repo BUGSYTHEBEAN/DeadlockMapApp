@@ -259,6 +259,7 @@ export default function MapCanvas(props) {
             getMatchById(matchId).then((v) => {
                 setMatchResponse(v)
                 setIsMatchById(true)
+                setMatchTime(15)
             }).catch(e => {
                 setIsMatchById(false)
                 setIsMatchByIdError(true)
