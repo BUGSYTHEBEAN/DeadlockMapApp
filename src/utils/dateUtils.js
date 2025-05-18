@@ -1,5 +1,11 @@
 export function getFormattedDate(date) {
-    return new Intl.DateTimeFormat("en-US", {
-        dateStyle: "full",
-      }).format(date)
+  return new Intl.DateTimeFormat("en-US", {
+      dateStyle: "full",
+    }).format(date)
+}
+
+export function getFormattedMatchTime(sec) {
+  const m = Math.floor(sec / 60).toString().padStart(2,'0')
+  const s = Math.floor(sec % 60).toString().padStart(2,'0')
+  return m + ':' + s;
 }

@@ -6,10 +6,11 @@ import {
     BookmarkIcon,
     ArrowDownTrayIcon,
     LinkIcon,
-    GlobeAmericasIcon
+    GlobeAmericasIcon,
+    ArrowUpTrayIcon
   } from '@heroicons/react/16/solid'
 import { useDispatch } from 'react-redux'
-import { setDrawingColor, setDrawingSize, setIsClearAgents, setIsClearAll, setIsClearLines, setIsDownload, setIsMapDetail, setIsMapJungle, setIsMapLaneObjectives, setIsSaveMap } from '../../redux/editorSlice'
+import { setDrawingColor, setDrawingSize, setIsClearAgents, setIsClearAll, setIsClearLines, setIsDownload, setIsMapDetail, setIsMapJungle, setIsMapLaneObjectives, setIsSaveMap, setMatchId } from '../../redux/editorSlice'
 import { useNavigate } from 'react-router';
 
 export default function OptionsPannel(props) {
@@ -22,6 +23,7 @@ export default function OptionsPannel(props) {
     const [saveModalButtonText, setSaveModalButtonText] = React.useState('Save Map')
     const [isLoading, setIsLoading] = React.useState(false)
     const [mapLinkText, setMapLinkText] = React.useState('dlkmap.com?map=your-map-here')
+    const [matchIdText, setMatchIdText] = React.useState('')
 
     React.useEffect(() => {
         dispatch(setDrawingColor(color))
@@ -56,6 +58,25 @@ export default function OptionsPannel(props) {
     return(
         <div className="place-items-center">
             <div className="mx-auto w-72 max-w-lg divide-y divide-white/5 rounded-xl bg-white/5">
+                <Disclosure as="div" className="p-3" defaultOpen={false}>
+                    <DisclosureButton className="group flex w-full items-center justify-between">
+                        <span className="flex items-center text-sm/6 font-medium text-white group-data-[hover]:text-white/80">
+                            <ArrowUpTrayIcon className="size-4 fill-white/30 mr-1" />
+                            <div className='px-1 text-transparent bg-clip-text bg-gradient-to-br from-orange-700 to-purple-500 font-bold'>BETA</div>
+                            Load Match ID
+                        </span>
+                        <ChevronDownIcon className="size-5 fill-white/60 group-data-[hover]:fill-white/50 group-data-[open]:rotate-180" />
+                    </DisclosureButton>
+                    <DisclosurePanel className="mt-2 text-sm/5 text-white/50">
+                        <Input className={'rounded-md h-8 w-full px-2 mr-2 bg-neutral-700'} type='text' placeholder='12345678' value={matchIdText} onChange={e => setMatchIdText(e.target.value)}/>
+                        <Button className="rounded-full flex items-center mt-2 w-full py-1 justify-center text-sm/6 font-semibold text-neutral-100 shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-sky-700"
+                            onClick={() => dispatch(setMatchId(matchIdText))}
+                        >
+                            <ArrowUpTrayIcon className="size-4 fill-white/30 mr-1" />
+                            {matchIdText.length > 0 ? 'Load Match' : 'Enter Match ID'}
+                        </Button>
+                    </DisclosurePanel>
+                </Disclosure>
                 <Disclosure as="div" className="p-3" defaultOpen={true}>
                     <DisclosureButton className="group flex w-full items-center justify-between">
                         <span className="flex items-center text-sm/6 font-medium text-white group-data-[hover]:text-white/80">

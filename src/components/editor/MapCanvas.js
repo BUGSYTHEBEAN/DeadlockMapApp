@@ -12,7 +12,10 @@ import mapLaneObjectives from '../../assets/map/map_laneobjectives.png'
 import mapJungle from '../../assets/map/map_jg.png'
 import { createMap, getMap } from '../../tables/maps';
 import { getMapFromQueryParams } from '../../utils/queryUtils';
-import { getUrlFromAgentId } from './AgentPannel';
+import { getAgentIdFromNumericId, getUrlFromAgentId } from './AgentPannel';
+import { Button, Description, Dialog, DialogPanel, DialogTitle, Input } from '@headlessui/react';
+import { getFormattedMatchTime } from '../../utils/dateUtils';
+import { getMatchById } from '../../utils/deadlockApi';
 
 const CANVAS_WIDTH = 800
 const CANVAS_HEIGHT = 700
@@ -76,7 +79,12 @@ export default function MapCanvas(props) {
     const isDownload = useSelector((state) => state.editor.isDownload)
     const isSaveMap = useSelector((state) => state.editor.isSaveMap)
     const agentList = useSelector((state) => state.editor.agentList)
+    const matchId = useSelector((state) => state.editor.matchId)
 
+    const [isMatchById, setIsMatchById] = React.useState(false);
+    const [isMatchByIdError, setIsMatchByIdError] = React.useState(false);
+    const [matchResponse, setMatchResponse] = React.useState({});
+    const [matchTime, setMatchTime] = React.useState(0);
     const [lines, setLines] = React.useState([]);
     const [agents, setAgents] = React.useState([]);
 
@@ -245,39 +253,108 @@ export default function MapCanvas(props) {
         stage.position(newPos);
     };
 
+    // Loading match by ID
+    React.useEffect(() => {
+        if (matchId) {
+            getMatchById(matchId).then((v) => {
+                setMatchResponse(v)
+                setIsMatchById(true)
+            }).catch(e => {
+                setIsMatchById(false)
+                setIsMatchByIdError(true)
+            })
+        }
+    }, [matchId])
+
+    React.useEffect(() => {
+        if (isMatchById && matchResponse) {
+            let matchAgents = matchResponse.match_info.players.map(
+                    p => { return {agentId: getAgentIdFromNumericId(p.hero_id), slot: p.player_slot, team: p.team === 1 ? 'sapphire' : 'amber'} }
+                ).sort((a, b) => a.slot - b.slot)
+            matchResponse.match_info.match_paths.paths.map(p => {
+                matchAgents[p.player_slot - 1] = {
+                    ...matchAgents[p.player_slot - 1],
+                    x: (p.x_min + ((p.x_max - p.x_min) * (p.x_pos[matchTime] ?? 0) / matchResponse.match_info.match_paths.x_resolution)) * CANVAS_WIDTH / (matchResponse.match_info.match_paths.x_resolution + 2400) + CANVAS_WIDTH / 2,
+                    y: -(p.y_min + ((p.y_max - p.y_min) * (p.y_pos[matchTime] ?? 0) / matchResponse.match_info.match_paths.y_resolution)) * CANVAS_HEIGHT / matchResponse.match_info.match_paths.y_resolution + CANVAS_HEIGHT / 2
+                }
+            })
+            dispatch(setAgentList(matchAgents.map(p => {return {x: p.x, y: p.y, agentId: p.agentId, team: p.team}})))
+            setAgents(matchAgents.map((p, i) => <Agent
+                agentId={p.agentId}
+                key={i}
+                team={p.team}
+                x={p.x}
+                y={p.y}
+                index={i}
+            />))
+        }
+    }, [matchTime])
+
     return(
-        <div onDragOver={(e) => e.preventDefault()} onMouseLeave={handleMouseUp} className='size-min'>
-        <Stage
-            width={CANVAS_WIDTH}
-            height={CANVAS_HEIGHT}
-            onMouseDown={handleMouseDown}
-            onMousemove={handleMouseMove}
-            onMouseup={handleMouseUp}
-            onWheel={handleWheel}
-            ref={stageRef}
-        >
-            <Layer>
-                <MapOutline />
-                {isMapDetail && <MapDetails />}
-                {isMapLaneObjectives && <MapLaneObjectives />}
-                {isMapJungle && <MapJungle />}
-                {lines.map((line, i) => (
-                    // Code to handle drawing on the map
-                    <Line
-                        key={i}
-                        points={line.points}
-                        stroke={line.color}
-                        strokeWidth={line.size}
-                        tension={0.5}
-                        lineCap="round"
-                        lineJoin="round"
-                        globalCompositeOperation="source-over"
-                    />
-                ))}
-                {agents}
-                <Text text="dlkmap.com" fill="#fff" x={CANVAS_WIDTH - 120} y={CANVAS_HEIGHT - 20} fontSize={18} fontFamily='serif'/>
-            </Layer>
-        </Stage>
+        <div>
+            <div onDragOver={(e) => e.preventDefault()} onMouseLeave={handleMouseUp} className='size-min'>
+            <Stage
+                width={CANVAS_WIDTH}
+                height={CANVAS_HEIGHT}
+                onMouseDown={handleMouseDown}
+                onMousemove={handleMouseMove}
+                onMouseup={handleMouseUp}
+                onWheel={handleWheel}
+                ref={stageRef}
+            >
+                <Layer>
+                    <MapOutline />
+                    {isMapDetail && <MapDetails />}
+                    {isMapLaneObjectives && <MapLaneObjectives />}
+                    {isMapJungle && <MapJungle />}
+                    {lines.map((line, i) => (
+                        // Code to handle drawing on the map
+                        <Line
+                            key={i}
+                            points={line.points}
+                            stroke={line.color}
+                            strokeWidth={line.size}
+                            tension={0.5}
+                            lineCap="round"
+                            lineJoin="round"
+                            globalCompositeOperation="source-over"
+                        />
+                    ))}
+                    {agents}
+                    <Text text="dlkmap.com" fill="#fff" x={CANVAS_WIDTH - 120} y={CANVAS_HEIGHT - 20} fontSize={18} fontFamily='serif'/>
+                    {
+                      isMatchById && <Text text={getFormattedMatchTime(matchTime)} fill="#fff" x={20} y={20} fontSize={38} fontFamily='serif'/>
+                    }
+                </Layer>
+            </Stage>
+            </div>
+            {
+                isMatchById && <Input 
+                    className={'w-[800px] accent-red-700'}
+                    type='range'
+                    value={matchTime}
+                    onChange={e => {setMatchTime(e.target.value)}}
+                    min={0}
+                    max={matchResponse.match_info.duration_s}
+                />
+            }
+            <Dialog open={isMatchByIdError} onClose={() => setIsMatchByIdError(false)} className={''}>
+                <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
+                    <DialogPanel className="max-w-lg space-y-4 border-2 bg-neutral-950 p-8 text-white rounded-3xl">
+                        <DialogTitle className="flex flex-row font-bold text-2xl">
+                            <div className='px-1 text-transparent bg-clip-text bg-gradient-to-br from-orange-700 to-purple-500 font-bold'>BETA</div>
+                            Load Match from ID
+                            <Button className="rounded-md py-0.5 px-3 ml-auto mr-0 text-sm/6 font-semibold text-neutral-100 shadow-inner shadow-white/20 focus:outline-none data-[hover]:bg-white/10"
+                                onClick={() => setIsMatchByIdError(false)}
+                            >
+                                Close
+                            </Button>
+                        </DialogTitle>
+                        <Description className={'text-gray-400 text-md'}>Error loading match from ID. Try another id, or if this was a valid id you can contact @bugsythebean on discord or bugsythebean@gmail.com</Description>
+                        <Input className={'rounded-md h-8 w-full px-2 mr-2 bg-neutral-800'} type='text' disabled value={`Match ID: ${matchId}`}/>
+                    </DialogPanel>
+                </div>
+            </Dialog>
         </div>
     )
 }

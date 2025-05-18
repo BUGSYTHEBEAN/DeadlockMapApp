@@ -62,6 +62,38 @@ export function getUrlFromAgentId(id) {
     }
 }
 
+export function getAgentIdFromNumericId(id) {
+    switch(id) {
+        case 6: return 'abrams'
+        case 15: return 'bebop'
+        case 16: return 'calico'
+        case 11: return 'dynamo'
+        case 17: return 'greyTalon'
+        case 13: return 'haze'
+        case 14: return 'holliday'
+        case 1: return 'infernus'
+        case 20: return 'ivy'
+        case 12: return 'kelvin'
+        case 4: return 'ladyGeist'
+        case 31: return 'lash'
+        case 8: return 'mcginnis'
+        case 52: return 'mirage'
+        case 18: return 'moNKrill'
+        case 10: return 'paradox'
+        case 50: return 'pocket'
+        case 2: return 'seven'
+        case 19: return 'shiv'
+        case 60: return 'tms'
+        case 3: return 'vindicta'
+        case 35: return 'viscous'
+        case 58: return 'vyper'
+        case 25: return 'warden'
+        case 7: return 'wraith'
+        case 27: return 'yamato'
+        default: return 'yamato'
+    }
+}
+
 function Agent(props) {
     const dispatch = useDispatch()
 
