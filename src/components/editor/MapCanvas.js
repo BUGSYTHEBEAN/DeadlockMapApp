@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux'
-import { Stage, Layer, Text, Image, Line } from 'react-konva';
+import { Stage, Layer, Text, Image, Line, Rect, Group, Arrow } from 'react-konva';
 import useImage from 'use-image';
 import { useDispatch } from 'react-redux'
 import { setAgentList, setDroppedCoordinates, setIsClearAgents, setIsClearAll, setIsClearLines, setIsDownload, setIsSaveMap, setMapId, setSelectedAgent } from '../../redux/editorSlice'
@@ -38,6 +38,20 @@ const MapLaneObjectives = () => {
 const MapJungle = () => {
     const [image] = useImage(mapJungle)
     return(<Image image={image} height={CANVAS_HEIGHT} width={CANVAS_WIDTH} />)
+}
+
+const FeedIcon_Kill = (props) => {
+    const [image1] = useImage(getUrlFromAgentId(props.agent1.agentId))
+    const [image2] = useImage(getUrlFromAgentId(props.agent2.agentId))
+    return(
+        <Group x={CANVAS_WIDTH-110} y={10} >
+            <Rect cornerRadius={10} stroke={props.agent2.team === 'sapphire' ? '#0ea5e9' : '#f59e0b'} strokeWidth={2} width={100} height={42} />
+            <Image image={image2} width={30} height={40} x={1} y={1} cornerRadius={10} fill={props.agent2.team === 'sapphire' ? '#0ea5e9' : '#f59e0b' }/>
+            <Image image={image1} width={30} height={40} x={69} y={1} cornerRadius={10} fill={props.agent1.team === 'sapphire' ? '#075985' : '#92400e' }/>
+            <Arrow x={33} y={20} points={[0,0,30,0]} strokeWidth={4} stroke={props.agent2.team === 'sapphire' ? '#0ea5e9' : '#f59e0b'} fill={props.agent2.team === 'sapphire' ? '#0ea5e9' : '#f59e0b'}/>
+            <Text text="X" fill="#171717" x={74} y={10} fontSize={30} fontFamily='sans-serif'/>
+        </Group>
+    )
 }
 
 const Agent = (props) => {
@@ -87,10 +101,21 @@ export default function MapCanvas(props) {
     const [matchTime, setMatchTime] = React.useState(0);
     const [lines, setLines] = React.useState([]);
     const [agents, setAgents] = React.useState([]);
+    const [feed, setFeed] = React.useState([]);
 
     const isDrawing = React.useRef(false);
-
     const stageRef = React.useRef(null);
+
+    const deathTimes = isMatchById && matchResponse && matchResponse.match_info.players.map(p => {
+        const deathSet = p.death_details.reduce((acc, cur) => {
+            for (let i = 0; i < cur.death_duration_s + 5; i++) {
+                acc.set((cur.game_time_s + i).toString(), cur.killer_player_slot)
+            }
+            return acc
+        }, new Map())
+
+        return {slot: p.player_slot, deaths: deathSet}
+    })
 
     React.useEffect(() => {
         const mapId = getMapFromQueryParams()
@@ -258,6 +283,7 @@ export default function MapCanvas(props) {
         if (matchId) {
             getMatchById(matchId).then((v) => {
                 setMatchResponse(v)
+                console.log(v)
                 setIsMatchById(true)
                 setMatchTime(15)
             }).catch(e => {
@@ -279,6 +305,11 @@ export default function MapCanvas(props) {
                     y: -(p.y_min + ((p.y_max - p.y_min) * (p.y_pos[matchTime] ?? 0) / matchResponse.match_info.match_paths.y_resolution)) * CANVAS_HEIGHT / matchResponse.match_info.match_paths.y_resolution + CANVAS_HEIGHT / 2
                 }
             })
+            setFeed(deathTimes.map(e => {
+                if (e.deaths.has(matchTime.toString())) {
+                    return <FeedIcon_Kill agent1={matchAgents[e.slot - 1]} agent2={matchAgents[e.deaths.get(matchTime.toString()) - 1]}/>
+                }
+            }).filter(Boolean))
             dispatch(setAgentList(matchAgents.map(p => {return {x: p.x, y: p.y, agentId: p.agentId, team: p.team}})))
             setAgents(matchAgents.map((p, i) => <Agent
                 agentId={p.agentId}
@@ -287,7 +318,7 @@ export default function MapCanvas(props) {
                 x={p.x}
                 y={p.y}
                 index={i}
-            />))
+            />).filter(Boolean))
         }
     }, [matchTime])
 
@@ -326,6 +357,7 @@ export default function MapCanvas(props) {
                     {
                       isMatchById && <Text text={getFormattedMatchTime(matchTime)} fill="#fff" x={20} y={20} fontSize={38} fontFamily='serif'/>
                     }
+                    { isMatchById && feed.map((v, i) => <Group y={i*50}>{v}</Group>) }
                 </Layer>
             </Stage>
             </div>
