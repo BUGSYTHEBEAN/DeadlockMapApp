@@ -10,6 +10,7 @@ import mapOutline from '../../assets/map/map_outline.png'
 import mapDetails from '../../assets/map/map_details.png'
 import mapLaneObjectives from '../../assets/map/map_laneobjectives.png'
 import mapJungle from '../../assets/map/map_jg.png'
+import midBoss from '../../assets/other/mid_boss.png'
 import { createMap, getMap } from '../../tables/maps';
 import { getMapFromQueryParams } from '../../utils/queryUtils';
 import { getAgentIdFromNumericId, getUrlFromAgentId } from './AgentPannel';
@@ -40,15 +41,27 @@ const MapJungle = () => {
     return(<Image image={image} height={CANVAS_HEIGHT} width={CANVAS_WIDTH} />)
 }
 
+const FeedIcon_MidBoss = (props) => {
+    const [image] = useImage(midBoss)
+    const primaryColor = props.team === 1 ? '#0ea5e9' : '#f59e0b'
+    return(
+        <Group x={CANVAS_WIDTH-110} y={10}>
+            <Image image={image} width={100} stroke={primaryColor} height={42} strokeWidth={2} cornerRadius={10} />
+            {props.steal && <Text text="STEAL" fill="#fff" x={7} y={12} fontSize={26} fontFamily='sans-serif' fontStyle='bold'/>}
+        </Group>
+    )
+}
+
 const FeedIcon_Kill = (props) => {
     const [image1] = useImage(getUrlFromAgentId(props.agent1.agentId))
     const [image2] = useImage(getUrlFromAgentId(props.agent2.agentId))
+    const primaryColor = props.agent2.team === 'sapphire' ? '#0ea5e9' : '#f59e0b'
     return(
         <Group x={CANVAS_WIDTH-110} y={10} >
-            <Rect cornerRadius={10} stroke={props.agent2.team === 'sapphire' ? '#0ea5e9' : '#f59e0b'} strokeWidth={2} width={100} height={42} />
-            <Image image={image2} width={30} height={40} x={1} y={1} cornerRadius={10} fill={props.agent2.team === 'sapphire' ? '#0ea5e9' : '#f59e0b' }/>
+            <Rect cornerRadius={10} stroke={primaryColor} fill={primaryColor} strokeWidth={4} width={100} height={42} />
+            <Image image={image2} width={30} height={40} x={1} y={1} cornerRadius={10} fill={primaryColor }/>
             <Image image={image1} width={30} height={40} x={69} y={1} cornerRadius={10} fill={props.agent1.team === 'sapphire' ? '#075985' : '#92400e' }/>
-            <Arrow x={33} y={20} points={[0,0,30,0]} strokeWidth={4} stroke={props.agent2.team === 'sapphire' ? '#0ea5e9' : '#f59e0b'} fill={props.agent2.team === 'sapphire' ? '#0ea5e9' : '#f59e0b'}/>
+            <Arrow x={33} y={20} points={[0,0,30,0]} strokeWidth={6} pointerLength={8} stroke={'#171717'} fill={'#171717'}/>
             <Text text="X" fill="#171717" x={74} y={10} fontSize={30} fontFamily='sans-serif'/>
         </Group>
     )
@@ -283,7 +296,7 @@ export default function MapCanvas(props) {
         if (matchId) {
             getMatchById(matchId).then((v) => {
                 setMatchResponse(v)
-                console.log(v)
+                // console.log(v)
                 setIsMatchById(true)
                 setMatchTime(15)
             }).catch(e => {
@@ -309,7 +322,8 @@ export default function MapCanvas(props) {
                 if (e.deaths.has(matchTime.toString())) {
                     return <FeedIcon_Kill agent1={matchAgents[e.slot - 1]} agent2={matchAgents[e.deaths.get(matchTime.toString()) - 1]}/>
                 }
-            }).filter(Boolean))
+            }).concat(matchResponse.match_info?.mid_boss.map(v => v.destroyed_time_s <= matchTime && v.destroyed_time_s + 45 > matchTime
+                && <FeedIcon_MidBoss team={v.team_claimed} steal={v.team_claimed != v.team_killed}/>)).filter(Boolean))
             dispatch(setAgentList(matchAgents.map(p => {return {x: p.x, y: p.y, agentId: p.agentId, team: p.team}})))
             setAgents(matchAgents.map((p, i) => <Agent
                 agentId={p.agentId}
@@ -357,7 +371,7 @@ export default function MapCanvas(props) {
                     {
                       isMatchById && <Text text={getFormattedMatchTime(matchTime)} fill="#fff" x={20} y={20} fontSize={38} fontFamily='serif'/>
                     }
-                    { isMatchById && feed.map((v, i) => <Group y={i*50}>{v}</Group>) }
+                    { isMatchById && feed.map((v, i) => <Group y={i*50} key={i}>{v}</Group>) }
                 </Layer>
             </Stage>
             </div>
