@@ -54,8 +54,8 @@ const FeedIcon_MidBoss = (props) => {
 
 const FeedIcon_Kill = (props) => {
     const [image1] = useImage(getUrlFromAgentId(props.agent1.agentId))
-    const [image2] = useImage(getUrlFromAgentId(props.agent2.agentId))
-    const primaryColor = props.agent2.team === 'sapphire' ? '#0ea5e9' : '#f59e0b'
+    const [image2] = useImage(getUrlFromAgentId(props.agent2?.agentId ?? props.agent1.agentId))
+    const primaryColor = props.agent2?.team ? props.agent2.team === 'sapphire' ? '#0ea5e9' : '#f59e0b' : props.agent1.team !== 'sapphire' ? '#0ea5e9' : '#f59e0b'
     return(
         <Group x={CANVAS_WIDTH-110} y={10} >
             <Rect cornerRadius={10} stroke={primaryColor} fill={primaryColor} strokeWidth={4} width={100} height={42} />
