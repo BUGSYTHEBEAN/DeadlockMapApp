@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { Stage, Layer, Text, Image, Line, Rect, Group, Arrow } from 'react-konva';
 import useImage from 'use-image';
 import { useDispatch } from 'react-redux'
-import { setAgentList, setDroppedCoordinates, setIsClearAgents, setIsClearAll, setIsClearLines, setIsDownload, setIsSaveMap, setMapId, setSelectedAgent } from '../../redux/editorSlice'
+import { setAgentList, setDroppedCoordinates, setIsClearAgents, setIsClearAll, setIsClearLines, setIsDownload, setIsSaveMap, setMapId, setMatchId, setSelectedAgent } from '../../redux/editorSlice'
 
 // map imports
 import mapOutline from '../../assets/map/map_outline.png'
@@ -12,7 +12,7 @@ import mapLaneObjectives from '../../assets/map/map_laneobjectives.png'
 import mapJungle from '../../assets/map/map_jg.png'
 import midBoss from '../../assets/other/mid_boss.png'
 import { createMap, getMap } from '../../tables/maps';
-import { getMapFromQueryParams } from '../../utils/queryUtils';
+import { getMapFromQueryParams, getMatchFromQueryParams } from '../../utils/queryUtils';
 import { getAgentIdFromNumericId, getUrlFromAgentId } from './AgentPannel';
 import { Button, Description, Dialog, DialogPanel, DialogTitle, Input } from '@headlessui/react';
 import { getFormattedMatchTime } from '../../utils/dateUtils';
@@ -133,8 +133,10 @@ export default function MapCanvas(props) {
         return {slot: p.player_slot, deaths: deathSet}
     })
 
+    // Load map from query params
     React.useEffect(() => {
         const mapId = getMapFromQueryParams()
+        const matchId = getMatchFromQueryParams()
         if (mapId) {
             getMap(mapId).then((map) => {
                 // console.log(map.at(0))
@@ -143,6 +145,9 @@ export default function MapCanvas(props) {
                 dispatch(setAgentList(agentsDownloaded))
                 setAgents(agentsDownloaded.map((a, i) => <Agent agentId={a.agentId} key={i} team={a.team} index={i} x={a.x} y={a.y} />))
             })
+        }
+        if (matchId && !isMatchById) {
+            dispatch(setMatchId(matchId))
         }
     }, [])
 

@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router';
 export default function OptionsPannel(props) {
     const dispatch = useDispatch()
     const mapId = useSelector((state) => state.editor.mapId)
+    const matchId = useSelector((state) => state.editor.matchId)
     const navigate = useNavigate()
 
     const [color, setColor] = React.useState('#fff')
@@ -23,7 +24,8 @@ export default function OptionsPannel(props) {
     const [saveModalButtonText, setSaveModalButtonText] = React.useState('Save Map')
     const [isLoading, setIsLoading] = React.useState(false)
     const [mapLinkText, setMapLinkText] = React.useState('dlkmap.com?map=your-map-here')
-    const [matchIdText, setMatchIdText] = React.useState('')
+    const [matchIdText, setMatchIdText] = React.useState(matchId)
+    const [matchIdButtonText, setMatchIdButtonText] = React.useState('Enter Match ID')
 
     React.useEffect(() => {
         dispatch(setDrawingColor(color))
@@ -36,6 +38,10 @@ export default function OptionsPannel(props) {
             setSaveModalButtonText('Copy')
         }
     }, [mapId])
+
+    React.useEffect(() => {
+        setMatchIdButtonText(matchIdText.length > 0 ? matchIdText === matchId ? 'Copy Link' : 'Load Match' : 'Enter Match ID')
+    }, [matchIdText, matchId])
 
     const handleSaveButton = () => {
         if (mapId) {
@@ -55,6 +61,22 @@ export default function OptionsPannel(props) {
         setIsLoading(true)
     }
 
+    const handleMatchIdButton = () => {
+        if (matchIdText === matchId) {
+            try {
+                navigator.clipboard.writeText(`dlkmap.com?match=${matchId}`)
+                setMatchIdButtonText('Copied')
+                setTimeout(() => {
+                    setMatchIdButtonText('Copy Link')
+                }, 1000);
+            } catch {
+                console.log('Error copying to clipboard!')
+            }
+            return
+        }
+        dispatch(setMatchId(matchIdText))
+    }
+
     return(
         <div className="place-items-center">
             <div className="mx-auto w-72 max-w-lg divide-y divide-white/5 rounded-xl bg-white/5">
@@ -69,11 +91,9 @@ export default function OptionsPannel(props) {
                     </DisclosureButton>
                     <DisclosurePanel className="mt-2 text-sm/5 text-white/50">
                         <Input className={'rounded-md h-8 w-full px-2 mr-2 bg-neutral-700'} type='text' placeholder='12345678' value={matchIdText} onChange={e => setMatchIdText(e.target.value)}/>
-                        <Button className="rounded-full flex items-center mt-2 w-full py-1 justify-center text-sm/6 font-semibold text-neutral-100 shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-sky-700"
-                            onClick={() => dispatch(setMatchId(matchIdText))}
-                        >
-                            <ArrowUpTrayIcon className="size-4 fill-white/30 mr-1" />
-                            {matchIdText.length > 0 ? 'Load Match' : 'Enter Match ID'}
+                        <Button className="rounded-full flex items-center mt-2 w-full py-1 justify-center text-sm/6 font-semibold text-neutral-100 shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-sky-700" onClick={handleMatchIdButton}>
+                            {matchIdText === matchId ? <LinkIcon className="size-4 fill-white/30 mr-1" /> : <ArrowUpTrayIcon className="size-4 fill-white/30 mr-1" />} 
+                            {matchIdButtonText}
                         </Button>
                     </DisclosurePanel>
                 </Disclosure>
