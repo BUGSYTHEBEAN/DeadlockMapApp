@@ -72,21 +72,24 @@ const Agent = (props) => {
     const agentList = useSelector((state) => state.editor.agentList)
     const [image] = useImage(getUrlFromAgentId(props.agentId))
     return(
-        <Image
-            onDragEnd={(e) => {
-                dispatch(setAgentList(agentList.map((v, i) => i === props.index 
-                    ? {x: Math.floor(e.target.x()), y: Math.floor(e.target.y()), agentId: props.agentId, team: props.team}
-                    : v)))
-            }}
-            image={image}
-            width={42}
-            height={57}
-            x={(props.x ?? CANVAS_WIDTH / 2) - 21}
-            y={(props.y ?? CANVAS_HEIGHT / 2) - 28}
-            cornerRadius={5}
-            draggable
-            fill={props.team === 'sapphire' ? '#0ea5e9' : props.team === 'amber' ? '#f59e0b' : undefined}
-        />)
+        <Group x={(props.x ?? CANVAS_WIDTH / 2) - 21} y={(props.y ?? CANVAS_HEIGHT / 2) - 28}>
+            <Image
+                onDragEnd={(e) => {
+                    dispatch(setAgentList(agentList.map((v, i) => i === props.index 
+                        ? {x: Math.floor(e.target.x()), y: Math.floor(e.target.y()), agentId: props.agentId, team: props.team}
+                        : v)))
+                }}
+                image={image}
+                width={42}
+                height={57}
+                cornerRadius={5}
+                draggable={props.health === undefined}
+                fill={props.team === 'sapphire' ? '#0ea5e9' : props.team === 'amber' ? '#f59e0b' : undefined}
+            />
+            {props.health !== undefined && <Rect cornerRadius={5} fill={'#e5e5e5'} y={52} height={5} width={42}/>}
+            {props.health !== undefined && <Rect cornerRadius={5} fill={props.health > 60 ? '#65a30d' : props.health > 20 ? '#eab308' : '#dc2626'} y={52} height={5} width={Math.ceil(props.health / 100 * 42)}/>}
+        </Group>
+    )
 }
 
 export default function MapCanvas(props) {
@@ -311,17 +314,19 @@ export default function MapCanvas(props) {
             let matchAgents = matchResponse.match_info.players.map(
                     p => { return {agentId: getAgentIdFromNumericId(p.hero_id), slot: p.player_slot, team: p.team === 1 ? 'sapphire' : 'amber'} }
                 ).sort((a, b) => a.slot - b.slot)
-            matchResponse.match_info.match_paths.paths.map(p => {
+            matchResponse.match_info.match_paths.paths.forEach(p => {
                 matchAgents[p.player_slot - 1] = {
                     ...matchAgents[p.player_slot - 1],
                     x: (p.x_min + ((p.x_max - p.x_min) * (p.x_pos[matchTime] ?? 0) / matchResponse.match_info.match_paths.x_resolution)) * CANVAS_WIDTH / (matchResponse.match_info.match_paths.x_resolution + 2400) + CANVAS_WIDTH / 2,
-                    y: -(p.y_min + ((p.y_max - p.y_min) * (p.y_pos[matchTime] ?? 0) / matchResponse.match_info.match_paths.y_resolution)) * CANVAS_HEIGHT / matchResponse.match_info.match_paths.y_resolution + CANVAS_HEIGHT / 2
+                    y: -(p.y_min + ((p.y_max - p.y_min) * (p.y_pos[matchTime] ?? 0) / matchResponse.match_info.match_paths.y_resolution)) * CANVAS_HEIGHT / matchResponse.match_info.match_paths.y_resolution + CANVAS_HEIGHT / 2,
+                    health: p.health[matchTime]
                 }
             })
             setFeed(deathTimes.map(e => {
                 if (e.deaths.has(matchTime.toString())) {
                     return <FeedIcon_Kill agent1={matchAgents[e.slot - 1]} agent2={matchAgents[e.deaths.get(matchTime.toString()) - 1]}/>
                 }
+                return false
             }).concat(matchResponse.match_info?.mid_boss.map(v => v.destroyed_time_s <= matchTime && v.destroyed_time_s + 45 > matchTime
                 && <FeedIcon_MidBoss team={v.team_claimed} steal={v.team_claimed != v.team_killed}/>)).filter(Boolean))
             dispatch(setAgentList(matchAgents.map(p => {return {x: p.x, y: p.y, agentId: p.agentId, team: p.team}})))
@@ -332,6 +337,7 @@ export default function MapCanvas(props) {
                 x={p.x}
                 y={p.y}
                 index={i}
+                health={p.health}
             />).filter(Boolean))
         }
     }, [matchTime])
