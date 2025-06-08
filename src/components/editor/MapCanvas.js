@@ -12,7 +12,7 @@ import mapLaneObjectives from '../../assets/map/map_laneobjectives.png'
 import mapJungle from '../../assets/map/map_jg.png'
 import midBoss from '../../assets/other/mid_boss.png'
 import { createMap, getMap } from '../../tables/maps';
-import { getMapFromQueryParams, getMatchFromQueryParams } from '../../utils/queryUtils';
+import { getMapFromQueryParams, getMatchFromQueryParams, getTimeFromQueryParams } from '../../utils/queryUtils';
 import { getAgentIdFromNumericId, getUrlFromAgentId } from './AgentPannel';
 import { Button, Description, Dialog, DialogPanel, DialogTitle, Input } from '@headlessui/react';
 import { getFormattedMatchTime } from '../../utils/dateUtils';
@@ -301,12 +301,13 @@ export default function MapCanvas(props) {
 
     // Loading match by ID
     React.useEffect(() => {
+        const time = getTimeFromQueryParams()
         if (matchId) {
             getMatchById(matchId).then((v) => {
                 setMatchResponse(v)
                 // console.log(v)
                 setIsMatchById(true)
-                setMatchTime(15)
+                setMatchTime(time != null && Number.isInteger(time) ? time : 15)
             }).catch(e => {
                 setIsMatchById(false)
                 setIsMatchByIdError(true)
