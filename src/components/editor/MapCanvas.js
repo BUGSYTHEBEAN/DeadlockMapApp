@@ -307,7 +307,7 @@ export default function MapCanvas(props) {
                 setMatchResponse(v)
                 // console.log(v)
                 setIsMatchById(true)
-                setMatchTime(time != null && Number.isInteger(time) ? time : 15)
+                setMatchTime(time != null ? time : 15)
             }).catch(e => {
                 setIsMatchById(false)
                 setIsMatchByIdError(true)
