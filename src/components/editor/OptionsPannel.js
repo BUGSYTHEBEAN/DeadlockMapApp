@@ -33,7 +33,7 @@ export default function OptionsPannel(props) {
 
     React.useEffect(() => {
         if (mapId) {
-            setMapLinkText(`dlkmap.com/strats?map=${mapId}`)
+            setMapLinkText(`https://dlkmap.com/strats?map=${mapId}`)
             setIsLoading(false)
             setSaveModalButtonText('Copy')
         }
@@ -64,7 +64,7 @@ export default function OptionsPannel(props) {
     const handleMatchIdButton = () => {
         if (matchIdText === matchId) {
             try {
-                navigator.clipboard.writeText(`dlkmap.com?match=${matchId}`)
+                navigator.clipboard.writeText(`https://dlkmap.com?match=${matchId}`)
                 setMatchIdButtonText('Copied')
                 setTimeout(() => {
                     setMatchIdButtonText('Copy Link')
