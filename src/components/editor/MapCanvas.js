@@ -4,6 +4,14 @@ import { Stage, Layer, Text, Image, Line, Rect, Group, Arrow } from 'react-konva
 import useImage from 'use-image';
 import { useDispatch } from 'react-redux'
 import { setAgentList, setDroppedCoordinates, setIsClearAgents, setIsClearAll, setIsClearLines, setIsDownload, setIsSaveMap, setMapId, setMatchId, setSelectedAgent } from '../../redux/editorSlice'
+import { createMap, getMap } from '../../tables/maps';
+import { getMapFromQueryParams, getMatchFromQueryParams, getTimeFromQueryParams } from '../../utils/queryUtils';
+import { getAgentIdFromNumericId, getUrlFromAgentId } from './AgentPannel';
+import { Button, Description, Dialog, DialogPanel, DialogTitle, Input } from '@headlessui/react';
+import { getFormattedMatchTime } from '../../utils/dateUtils';
+import { getMatchById } from '../../utils/deadlockApi';
+import { getObjectiveGroup } from './MapObjectives';
+import SoulChart from './SoulChart';
 
 // map imports
 import mapOutline from '../../assets/map/map_outline.png'
@@ -11,12 +19,6 @@ import mapDetails from '../../assets/map/map_details.png'
 import mapLaneObjectives from '../../assets/map/map_laneobjectives.png'
 import mapJungle from '../../assets/map/map_jg.png'
 import midBoss from '../../assets/other/mid_boss.png'
-import { createMap, getMap } from '../../tables/maps';
-import { getMapFromQueryParams, getMatchFromQueryParams, getTimeFromQueryParams } from '../../utils/queryUtils';
-import { getAgentIdFromNumericId, getUrlFromAgentId } from './AgentPannel';
-import { Button, Description, Dialog, DialogPanel, DialogTitle, Input } from '@headlessui/react';
-import { getFormattedMatchTime } from '../../utils/dateUtils';
-import { getMatchById } from '../../utils/deadlockApi';
 
 const CANVAS_WIDTH = 800
 const CANVAS_HEIGHT = 700
@@ -363,7 +365,8 @@ export default function MapCanvas(props) {
                 <Layer>
                     <MapOutline />
                     {isMapDetail && <MapDetails />}
-                    {isMapLaneObjectives && <MapLaneObjectives />}
+                    {isMapLaneObjectives && !isMatchById && <MapLaneObjectives />}
+                    {isMatchById && getObjectiveGroup(matchResponse.match_info.objectives, matchTime)}
                     {isMapJungle && <MapJungle />}
                     {lines.map((line, i) => (
                         // Code to handle drawing on the map
@@ -388,14 +391,17 @@ export default function MapCanvas(props) {
             </Stage>
             </div>
             {
-                isMatchById && <Input 
-                    className={'w-[800px] accent-red-700'}
-                    type='range'
-                    value={matchTime}
-                    onChange={e => {setMatchTime(e.target.value)}}
-                    min={0}
-                    max={matchResponse.match_info.duration_s}
-                />
+                isMatchById && <div className={'w-[800px]'}>
+                    <Input 
+                        className={'w-[800px] accent-red-700'}
+                        type='range'
+                        value={matchTime}
+                        onChange={e => {setMatchTime(e.target.value)}}
+                        min={0}
+                        max={matchResponse.match_info.duration_s}
+                    />
+                    <SoulChart matchResponse={matchResponse} />
+                </div>
             }
             <Dialog open={isMatchByIdError} onClose={() => setIsMatchByIdError(false)} className={''}>
                 <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
