@@ -8,11 +8,9 @@ import {
   Title,
   Tooltip,
   Legend,
-  layouts,
   TimeScale,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import { getFormattedMatchTime } from '../../utils/dateUtils';
 
 ChartJS.register(
     TimeScale,

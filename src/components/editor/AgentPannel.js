@@ -26,6 +26,8 @@ import vyper from "../../assets/agents/vyper_card.png"
 import warden from "../../assets/agents/warden_card.png"
 import wraith from "../../assets/agents/wraith_card.png"
 import yamato from "../../assets/agents/yamato_card.png"
+import billy from "../../assets/agents/billy_card.png"
+import mina from "../../assets/agents/mina_card.png"
 import { useDispatch } from 'react-redux'
 import { setDroppedCoordinates, setSelectedAgent, setSelectedTeam } from '../../redux/editorSlice'
 import { Tab, TabGroup, TabList } from '@headlessui/react'
@@ -58,6 +60,8 @@ export function getUrlFromAgentId(id) {
         case 'warden': return warden
         case 'wraith': return wraith
         case 'yamato': return yamato
+        case 'billy': return billy
+        case 'mina': return mina
         default: return abrams
     }
 }
@@ -90,6 +94,8 @@ export function getAgentIdFromNumericId(id) {
         case 25: return 'warden'
         case 7: return 'wraith'
         case 27: return 'yamato'
+        case 72: return 'billy'
+        case 63: return 'mina'
         default: return 'yamato'
     }
 }
@@ -145,6 +151,7 @@ export default function AgentPannel() {
                 <div className="grid grid-cols-4 gap-2">
                     <Agent src={abrams} agent={'abrams'} team={selectedTeam} />
                     <Agent src={bebop} agent={'bebop'} team={selectedTeam} />
+                    <Agent src={billy} agent={'billy'} team={selectedTeam} />
                     <Agent src={calico} agent={'calico'} team={selectedTeam} />
                     <Agent src={dynamo} agent={'dynamo'} team={selectedTeam} />
                     <Agent src={greyTalon}  agent={'greyTalon'} team={selectedTeam} />
@@ -156,6 +163,7 @@ export default function AgentPannel() {
                     <Agent src={ladyGeist} agent={'ladyGeist'} team={selectedTeam} />
                     <Agent src={lash} agent={'lash'} team={selectedTeam} />
                     <Agent src={mcginnis} agent={'mcginnis'} team={selectedTeam} />
+                    <Agent src={mina} agent={'mina'} team={selectedTeam} />
                     <Agent src={mirage} agent={'mirage'} team={selectedTeam} />
                     <Agent src={moNKrill} agent={'moNKrill'} team={selectedTeam} />
                     <Agent src={paradox} agent={'paradox'} team={selectedTeam} />
